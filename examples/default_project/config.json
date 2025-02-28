@@ -1,5 +1,6 @@
 {
     "debug": false,
+    "view": "app",
     "screen_path": "screens",
     "routes": {
         "/": "HomeScreen"
