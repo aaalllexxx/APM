@@ -1,4 +1,5 @@
 @echo off
+cd %~dp0
 cd ../executable
 set "parent_folder=%cd%"
 echo %parent_folder%

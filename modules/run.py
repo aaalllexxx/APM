@@ -24,7 +24,7 @@ def run(base_dir, gconf_path, *args, **kwargs):
         print("[red][-] Файл конфигурации не найден.[/red]")
         return
             
-    print(f"[green]\[+] Запуск проекта '{data['project_name']}'...[/green]")
+    print(f"[green][+] Запуск проекта '{data['project_name']}'...[/green]")
     try:
         interpreter = g_config.get("interpreter")
         file = data["main_file"].replace(" ", '" "')
@@ -35,7 +35,7 @@ def run(base_dir, gconf_path, *args, **kwargs):
         
         
     except Exception as e:
-        ans = input("[red]\[-] Случилась ошибка. Выбрать другой интерпретатор?[/red]")
+        ans = input("[red][-] Случилась ошибка. Выбрать другой интерпретатор?[/red]")
         if "y" in ans or "д" in ans:
             interp = os.path.abspath(FileInput.select_file())
         
