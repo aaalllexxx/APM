@@ -100,6 +100,22 @@
   {
    "optionDest": "datas",
    "value": "C:/Users/aaabd/Desktop/APM/examples;examples/"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "requests"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "tqdm"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "shutil"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "zipfile"
   }
  ],
  "nonPyinstallerOptions": {
