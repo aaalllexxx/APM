@@ -42,8 +42,8 @@ class App:
     @config.setter
     def config(self, value):
         if isinstance(value, dict):
-            if value.get("routes"):
-                for route, func in value["routes"].items():
+            if value.get("routers") and value.get("routers") != "auto":
+                for route, func in value["routers"].items():
                     if value.get("screen_path"):
                         prefix = value["screen_path"].replace("/", ".") + "."
                     cls = getattr(import_module(prefix + func), func)
@@ -52,7 +52,20 @@ class App:
                         options = cls.__options__
                     call = cls()
                     self.add_router(route, call, **options)
-            
+            if value.get("routers") == "auto":
+                files = os.listdir(self.project_root + value.get("screen_path"))
+                prefix = value["screen_path"].replace("/", ".") + "."
+                for file in files:
+                    if file.startswith("__"):
+                        continue
+                    cls = getattr(import_module(prefix + file.replace(".py", "")), file.replace(".py", ""))
+                    options = {}
+                    if hasattr(cls, "__options__"):
+                        options = cls.__options__
+                    call = cls()
+                    self.add_router(cls.route, call, **options)
+
+
             if value.get("root_path"):
                 self.flask.root_path = value["root_path"]
             for prop, value in value.items():       

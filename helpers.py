@@ -192,6 +192,9 @@ class ConfigInput:
     def start(cls, template):
         block_controls()
         template = JsonDict(template)
+        for tmpl in template.keys():
+            if template[tmpl].get("required"):
+                cls.config[tmpl] = template[tmpl]["default"]
         index = 0
         configured = False
         pressed = True
