@@ -22,16 +22,4 @@ print("[green bold][+] Обновление исполняемого файла.
 with open(app_data + os.sep +"apm" + os.sep + "apm.exe", "wb") as file_to, open(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + "executable" + os.sep + "apm.exe", "rb") as file_from:
     file_to.write(file_from.read())
 print("[green bold][+] Исполняемый файл обновлен [/green bold]")
-
-print("[green bold][+] Удаление временных файлов [/green bold]")
-for file in os.listdir(app_data + os.sep +"apm" + os.sep + "sources"):
-    try:
-        if os.path.isfile(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file):
-            os.remove(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file)
-        else:
-            clear_dir(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file)
-    except Exception as e:
-        print(e)
-os.rmdir(app_data + os.sep +"apm" + os.sep + "sources")
-print("[green bold][+] Удаление окончено [/green bold]")
 print("[green bold][+] Обновление завершено [/green bold]")
