@@ -1,8 +1,23 @@
 __help__ = "Обновить менеджер проектов apm"
 import os
-from helpers import clear_dir
 from rich import print
 from git import Repo 
+import shutil
+import errno
+import stat
+
+
+def clear_dir(path):
+    shutil.rmtree(path, ignore_errors=False, onerror=handle_remove_readonly)
+
+
+def handle_remove_readonly(func, path, exc):
+  excvalue = exc[1]
+  if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+      os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
+      func(path)
+  else:
+      raise
 
 def run(base_dir, *args, **kwargs):
     print("[green bold][+] Начало установки исходников...[/green bold]")
