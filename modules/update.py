@@ -1,5 +1,6 @@
 __help__ = "Обновить менеджер проектов apm"
 import os
+import subprocess
 from rich import print
 from git import Repo 
 import shutil
@@ -33,4 +34,4 @@ def run(base_dir, *args, **kwargs):
     
     print("[green bold][+] Исходники установлены [/green bold]")
     print("[green bold][+] Запуск скрипта обновления [/green bold]")
-    os.system(app_data + os.sep + "apm/sources/executable/update.exe")
+    subprocess.run(["cmd.exe", "/c", "start", app_data + os.sep + "apm/sources/executable/update.exe"])
