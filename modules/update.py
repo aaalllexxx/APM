@@ -1,55 +1,52 @@
 __help__ = "Обновить менеджер проектов apm"
 import os
-import zipfile
-import requests
 import shutil
-from tqdm import tqdm
+import errno
+import stat
 from rich import print
+from git import Repo  
 
+
+def clear_dir(path):
+    shutil.rmtree(path, ignore_errors=False, onerror=handle_remove_readonly)
+
+
+def handle_remove_readonly(func, path, exc):
+  excvalue = exc[1]
+  if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+      os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
+      func(path)
+  else:
+      raise
 
 def run(base_dir, *args, **kwargs):
     print("[green bold][+] Начало установки исходников...[/green bold]")
-    link = "https://github.com/aaalllexxx/APM/archive/refs/heads/master.zip"
-    response = requests.get(link, stream=True)
+    link = "https://github.com/aaalllexxx/APM/"
     app_data = os.getenv("APPDATA")
-    if not os.path.exists(app_data + os.sep +"apm" + os.sep + "sources"):
-        os.mkdir(app_data + os.sep +"apm" + os.sep + "sources")
-
-    file = open(app_data + os.sep +"apm" + os.sep + "sources" + os.sep +"master.zip", "wb")
     try:
-        with tqdm.wrapattr(file, "write",
-                    miniters=1, desc="Установка исходников",
-                    total=int(response.headers.get('content-length', 0))) as fout:
-            for chunk in response.iter_content(chunk_size=4096):
-                fout.write(chunk)
-    except:
-        print("[red bold][-] Не удалось установить исходники [/red bold]")
-        return
-    file.close()
+        if os.path.exists(app_data + os.sep +"apm" + os.sep + "sources"):
+            clear_dir(app_data + os.sep +"apm" + os.sep + "sources")
+        os.mkdir(app_data + os.sep +"apm" + os.sep + "sources")
+    except Exception as e:
+        input(e)
+    Repo.clone_from(link, app_data + os.sep +"apm" + os.sep + "sources")
+    
     print("[green bold][+] Исходники установлены [/green bold]")
 
-    print("[green bold][+] Начало распаковки исходников... [/green bold]")
-    os.mkdir(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + "master")
-    try:
-        with zipfile.ZipFile(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + "master.zip", 'r') as zip_ref:
-            zip_ref.extractall(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + "master")
-    except:
-        print("[red bold][-] Не удалось распаковать исходники [/red bold]")
-        return
-
-    print("[green bold][+] Исходники распакованы [/green bold]")
-
     print("[green bold][+] Обновление исполняемого файла... [/green bold]")
-    with open(app_data + os.sep +"apm" + os.sep + "apm.exe", "wb") as file_to, open(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + "master" + os.sep + "APM-master" + os.sep + "executable" + os.sep + "apm.exe", "rb") as file_from:
+    with open(app_data + os.sep +"apm" + os.sep + "apm.exe", "wb") as file_to, open(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + "executable" + os.sep + "apm.exe", "rb") as file_from:
         file_to.write(file_from.read())
     print("[green bold][+] Исполняемый файл обновлен [/green bold]")
 
     print("[green bold][+] Удаление временных файлов [/green bold]")
     for file in os.listdir(app_data + os.sep +"apm" + os.sep + "sources"):
-        if os.path.isfile(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file):
-            os.remove(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file)
-        else:
-            shutil.rmtree(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file)
+        try:
+            if os.path.isfile(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file):
+                os.remove(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file)
+            else:
+                clear_dir(app_data + os.sep +"apm" + os.sep + "sources" + os.sep + file)
+        except Exception as e:
+            print(e)
     os.rmdir(app_data + os.sep +"apm" + os.sep + "sources")
     print("[green bold][+] Удаление окончено [/green bold]")
     print("[green bold][+] Обновление завершено [/green bold]")

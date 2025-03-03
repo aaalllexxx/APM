@@ -103,19 +103,23 @@
   },
   {
    "optionDest": "hiddenimports",
-   "value": "requests"
-  },
-  {
-   "optionDest": "hiddenimports",
-   "value": "tqdm"
-  },
-  {
-   "optionDest": "hiddenimports",
    "value": "shutil"
   },
   {
    "optionDest": "hiddenimports",
-   "value": "zipfile"
+   "value": "stat"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "errno"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "git"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyuac"
   }
  ],
  "nonPyinstallerOptions": {

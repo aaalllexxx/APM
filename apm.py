@@ -4,7 +4,6 @@ import sys
 from importlib import import_module
 import sys
 
-
 sys.dont_write_bytecode = True
 base_dir = os.sep.join(__file__.split(os.sep)[:-1]) + os.sep
 appdata = os.getenv('APPDATA') + os.sep
@@ -35,10 +34,11 @@ if "apm" in " ".join(sys.argv):
         executable = sys.argv[1]
         try:
             module = import_module(f"{module_path}.{executable}").run(base_dir, gconf_path)
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as e:
+            print(e)
             try:
                 module = import_module(f"{install_module_path}.{executable}").run(base_dir)
-            except (AttributeError, ModuleNotFoundError):
+            except (AttributeError, ModuleNotFoundError) as e:
                 print(f"Команда {executable} не опознана.")
         except AttributeError:
             print(f"Команда {executable} пока не реализована.") 
