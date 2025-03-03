@@ -5,8 +5,23 @@ from keyboard import add_hotkey, block_key, is_pressed, unblock_key
 from rich import print
 from json_dict import JsonDict
 from win2lin import System
+import shutil
+import errno
+import stat
 
 standard_input = input
+
+def clear_dir(path):
+    shutil.rmtree(path, ignore_errors=False, onerror=handle_remove_readonly)
+
+
+def handle_remove_readonly(func, path, exc):
+  excvalue = exc[1]
+  if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+      os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
+      func(path)
+  else:
+      raise
 
 def input(msg):
     print(f"[green bold]{msg}\n-> [/green bold]", end="")
