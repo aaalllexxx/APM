@@ -33,4 +33,4 @@ def run(base_dir, *args, **kwargs):
     
     print("[green bold][+] Исходники установлены [/green bold]")
     print("[green bold][+] Запуск скрипта обновления [/green bold]")
-    os.system(app_data + os.sep + "sources/executable/update.exe")
+    os.system(app_data + os.sep + "apm/sources/executable/update.exe")
