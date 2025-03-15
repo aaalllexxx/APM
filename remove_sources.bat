@@ -1,0 +1,1 @@
+rd /q /s "%AppData%\apm\sources"

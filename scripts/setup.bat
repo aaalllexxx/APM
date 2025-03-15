@@ -7,4 +7,7 @@ echo %parent_folder%
 
 xcopy /E /I /Y "%parent_folder%" "%AppData%\apm"
 setx PATH "%AppData%\apm;%PATH%" /M
-cmd /c start %AppData%\apm\remove_sources.bat
+if exist "%AppData%\apm\sources" (
+    cmd /c start %AppData%\apm\remove_sources.bat
+)
+exit
