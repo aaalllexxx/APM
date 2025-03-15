@@ -34,4 +34,4 @@ def run(base_dir, *args, **kwargs):
     
     print("[green bold][+] Исходники установлены [/green bold]")
     print("[green bold][+] Запуск скрипта обновления [/green bold]")
-    subprocess.run(["cmd.exe", "/c", "start", app_data + os.sep + "apm/sources/executable/update.exe"])
+    subprocess.run(["cmd.exe", "/c", "start", app_data + os.sep + "apm/sources/scripts/setup.bat"])
