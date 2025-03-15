@@ -9,7 +9,7 @@ import stat
 
 
 def clear_dir(path):
-    shutil.rmtree(path, ignore_errors=False, onerror=handle_remove_readonly)
+    shutil.rmtree(path, ignore_errors=False, onexc=handle_remove_readonly)
 
 
 def handle_remove_readonly(func, path, exc):

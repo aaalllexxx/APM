@@ -19,8 +19,7 @@ if not os.path.exists(appdata + "apm"):
 if not os.path.exists(gconf_path):
     with open(gconf_path, "w") as file:
         file.write("{}")
-    
-for prog_name in os.listdir(os.path.join(base_dir, "modules")):
+for prog_name in os.listdir(os.path.join(appdata + "apm", "modules")):
     if prog_name.startswith("__"):
         continue
     name = prog_name.split(".")[0]
@@ -33,11 +32,11 @@ if "apm" in " ".join(sys.argv):
     try:
         executable = sys.argv[1]
         try:
-            module = import_module(f"{module_path}.{executable}").run(base_dir, gconf_path)
+            module = import_module(f"{module_path}.{executable}").run(appdata + "apm", gconf_path)
         except ModuleNotFoundError as e:
             print(e)
             try:
-                module = import_module(f"{install_module_path}.{executable}").run(base_dir)
+                module = import_module(f"{install_module_path}.{executable}").run(appdata + "apm")
             except (AttributeError, ModuleNotFoundError) as e:
                 print(f"Команда {executable} не опознана.")
         except AttributeError:
