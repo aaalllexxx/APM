@@ -32,11 +32,11 @@ if "apm" in " ".join(sys.argv):
     try:
         executable = sys.argv[1]
         try:
-            module = import_module(f"{module_path}.{executable}").run(appdata + "apm", gconf_path)
+            module = import_module(f"{module_path}.{executable}").run(appdata + "apm" + os.sep, gconf_path)
         except ModuleNotFoundError as e:
             print(e)
             try:
-                module = import_module(f"{install_module_path}.{executable}").run(appdata + "apm")
+                module = import_module(f"{install_module_path}.{executable}").run(appdata + "apm" + os.sep)
             except (AttributeError, ModuleNotFoundError) as e:
                 print(f"Команда {executable} не опознана.")
         except AttributeError:
