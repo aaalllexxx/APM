@@ -9,11 +9,11 @@ import stat
 
 
 def clear_dir(path):
-    shutil.rmtree(path, ignore_errors=False, onerror=handle_remove_readonly)
+    shutil.rmtree(path, ignore_errors=False, onexc=handle_remove_readonly)
 
 
 def handle_remove_readonly(func, path, exc):
-  excvalue = exc[1]
+  excvalue = exc
   if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
       os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
       func(path)
