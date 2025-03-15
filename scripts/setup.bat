@@ -1,6 +1,7 @@
 @echo off
 cd %~dp0
 cd ..
+pip install -r requirements.txt
 set "parent_folder=%cd%"
 echo %parent_folder%
 
