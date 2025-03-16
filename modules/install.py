@@ -10,6 +10,7 @@ def run(base_dir, *args, **kwargs):
     name = url.split("/")[-1].replace(".git", "")
     if not os.path.exists(".apm"):
         print("[red][-] Директория не является проектом AEngine[/red]")
+        return
     if not os.path.exists(".apm/installed"):
         os.mkdir(".apm/installed")
     try:
