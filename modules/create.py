@@ -24,7 +24,8 @@ def run(base_dir, *args, **kwargs):
         
     if not os.path.exists(".apm/installed"):
         os.mkdir(".apm/installed")
-
+    
+    os.chdir(path)
     Repo.clone_from("https://github.com/aaalllexxx/AEngineApps", "AEngineApps")
     clear_dir("AEngineApps/.git")
         
