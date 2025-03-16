@@ -42,8 +42,8 @@ if "apm" in " ".join(sys.argv):
                 module.run(base_dir)
             except Exception as e:
                 try:
-                    import_module(f"{install_module_path}.{executable}").run(base_dir, gconf_path, args=args)
-                except ModuleNotFoundError:
+                    import_module(f"{install_module_path}.{executable}.{args[1]}").run(base_dir, gconf_path, args=args)
+                except (ModuleNotFoundError, IndexError):
                     print(f"Команда {executable} не опознана.")
                 except AttributeError:
                     import_module(f"{install_module_path}.{executable}").run(base_dir)
