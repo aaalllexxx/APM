@@ -1,7 +1,0 @@
-{
-    "debug": true,
-    "screen_path": "screens",
-    "routers": {
-        "/": "HomeScreen"
-    }
-}

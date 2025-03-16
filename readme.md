@@ -7,6 +7,8 @@
 ---
 > create (apm create) - создание нового проекта на AEngineApps
 ---
+> docs - открыть документацию aengineapps
+---
 > delete (apm delete) - удаление проекта AEngineApps
 ---
 > init (apm init) - инициализация проекта в качестве проекта AEngineApps
