@@ -19,6 +19,14 @@ def run(base_dir, *args, **kwargs):
         os.mkdir(app_data + os.sep +"apm" + os.sep + "sources")
     except Exception as e:
         input(e)
+    for file in os.listdir(app_data + os.sep + "apm"):
+        try:
+            if os.path.isfile(file):
+                os.remove(file)
+            else:
+                clear_dir(file)
+        except:
+            pass
     Repo.clone_from(link, app_data + os.sep +"apm" + os.sep + "sources")
     
     print("[green bold][+] Исходники установлены [/green bold]")
