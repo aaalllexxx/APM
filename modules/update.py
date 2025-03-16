@@ -15,13 +15,13 @@ def run(base_dir, *args, **kwargs):
     app_data = os.getenv("APPDATA")
 
     for file in os.listdir(app_data + os.sep + "apm"):
-        file = app_data + os.sep + "apm" + os.sep + file
+        fl = app_data + os.sep + "apm" + os.sep + file
         try:
-            if os.path.isfile(file):
-                os.remove(file)
+            if os.path.isfile(fl) and not "apm" in file:
+                os.remove(fl)
             else:
-                clear_dir(file)
-        except:
+                clear_dir(fl)
+        except Exception as e:
             pass
 
     Repo.clone_from(link, app_data + os.sep +"apm" + os.sep + "sources")
@@ -30,4 +30,3 @@ def run(base_dir, *args, **kwargs):
     print("[green bold][+] Запуск скрипта обновления [/green bold]")
     subprocess.run(["cmd.exe", "/c", "start", app_data + os.sep + "apm/sources/scripts/setup.bat"])
     print("[green bold][+] Готово. Дождитесь выполнения скрипта. [/green bold]")
-
