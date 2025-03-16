@@ -11,8 +11,7 @@ def run(base_dir, *args, **kwargs):
     path = ".apm/installed"
     if "-g" in arg:
         arg.pop(arg.index("-g"))
-        if not os.path.exists(base_dir + "installed"):
-            path = base_dir + "installed"
+        path = base_dir + "installed"
     elif not os.path.exists(".apm"):
         print("[red][-] Директория не является проектом AEngine[/red]")
         return
