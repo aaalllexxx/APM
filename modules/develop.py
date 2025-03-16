@@ -12,4 +12,5 @@ def run(*args, **kwargs):
         name = input("Введите название модуля")
         with open(f"{name}.py", "w", encoding="utf-8") as file:
             file.write(base)
+        print("[green][+] Модуль создан[/green]")
         
