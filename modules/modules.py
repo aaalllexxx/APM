@@ -1,13 +1,14 @@
 __help__ = "Просмотреть список модулей проекта"
 import os
+from rich import print
 
 def run(*args, **kwargs):
     modules = []
     if os.path.exists(".apm/installed"):
         modules = [file.replace(".py", "") for file in os.listdir(".apm/installed")]
     if modules:
-        print("Установленные модули:")
+        print("[blue]Установленные модули:[/blue]")
         for module in modules:
-            print(f" - {module}")
+            print(f"[green] - {module}[/green]")
     else:
-        print("Нет установленных модулей")
+        print("[red][-] Нет установленных модулей[/red]")

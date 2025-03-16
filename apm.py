@@ -35,14 +35,19 @@ if "apm" in " ".join(sys.argv):
         executable = sys.argv[1]
         args = sys.argv[1:]
         try:
-            module = import_module(f"{module_path}.{executable}").run(base_dir, gconf_path, args=args)
+            import_module(f"{module_path}.{executable}").run(base_dir, gconf_path, args=args)
         except ModuleNotFoundError as e:
             try:
                 module = SourceFileLoader(f"{install_module_path}.{executable}.{args[1]}", os.getcwd() + os.sep + ".apm" + os.sep + "installed" + os.sep + executable + os.sep + args[1] +".py").load_module()
-                module = module.run(base_dir)
+                module.run(base_dir)
             except (AttributeError, ModuleNotFoundError) as e:
-                print(e)
-                print(f"Команда {executable} не опознана.")
+                try:
+                    import_module(f"{install_module_path}.{executable}").run(base_dir, gconf_path, args=args)
+                except ModuleNotFoundError:
+                    print(f"Команда {executable} не опознана.")
+                except AttributeError:
+                    import_module(f"{install_module_path}.{executable}").run(base_dir)
+
         except AttributeError:
             print(f"Команда {executable} пока не реализована.") 
                 
