@@ -9,7 +9,7 @@ def run(*args, **kwargs):
         return
     if "module" in arg:
         base = '__help__ = "help string"\nfrom rich import print\n\ndef run(*args, **kwargs):\n\tprint(args, kwargs)'
-        name = input("Введите название проекта")
-        with open(f"{name}.py", encoding="utf-8") as file:
+        name = input("Введите название модуля")
+        with open(f"{name}.py", "w", encoding="utf-8") as file:
             file.write(base)
         
