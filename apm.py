@@ -8,7 +8,7 @@ from importlib.machinery import SourceFileLoader
 
 sys.dont_write_bytecode = True
 appdata = os.getenv('APPDATA') + os.sep
-base_dir = appdata + "/apm" if os.path.exists(appdata + "/apm") else os.sep.join(__file__.split(os.sep)[:-1]) + os.sep
+base_dir = appdata + "apm/" if os.path.exists(appdata + "/apm") else os.sep.join(__file__.split(os.sep)[:-1]) + os.sep
 gconf_path = appdata + "apm" + os.sep + "global_config.json"
 module_path = "modules"
 install_module_path = "installed"
