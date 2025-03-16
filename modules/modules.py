@@ -6,6 +6,7 @@ def run(base_dir, *args, **kwargs):
     arg = kwargs["args"]
     if len(arg) == 1 or "-h" in arg:
         print("Usage: apm modules")
+        return
     modules = []
     if os.path.exists(".apm/installed"):
         modules = [file.replace(".py", "") for file in os.listdir(".apm/installed")]

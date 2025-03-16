@@ -9,6 +9,7 @@ def run(base_dir, *args, **kwargs):
     arg = kwargs["args"]
     if len(arg) == 1 or "-h" in arg:
         print("Usage: apm config")
+        return
     try:
         config = ConfigInput.start(base_dir + "/config_template.json")
         with open("config.json", "w", encoding="utf-8") as file:

@@ -9,6 +9,7 @@ def run(base_dir, gconf_path, *args, **kwargs):
     arg = kwargs["args"]
     if len(arg) == 1 or "-h" in arg:
         print("Usage: apm select")
+        return
     if os.path.isdir(".apm"):
         config = JsonDict(gconf_path)
         local_config = JsonDict(".apm/run.json")
