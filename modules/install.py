@@ -10,6 +10,7 @@ def run(base_dir, *args, **kwargs):
     name = url.split("/")[-1].replace(".git", "")
     path = ".apm/installed"
     if "-g" in args:
+        args.pop(args.index("-g"))
         if not os.path.exists(base_dir + "installed"):
             path = base_dir + "installed"
     if not os.path.exists(".apm"):
