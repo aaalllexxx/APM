@@ -11,9 +11,10 @@ def run(base_dir, *args, **kwargs):
         arg.pop(arg.index("-g"))
         path = base_dir + "installed"
 
-    if not os.path.exists(".apm"):
+    elif not os.path.exists(".apm"):
         print("[red][-] Директория не является проектом apm[/red]")
         return
+    
     if not os.path.exists(f".apm/installed/{module}"):
         print("[red][-] Модуль не найден[/red]")
         return
