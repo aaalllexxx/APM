@@ -5,7 +5,8 @@ import os
 import shutil
 from rich import print
 from win2lin import System
-from helpers import input
+from helpers import input, clear_dir
+from git import Repo
 
 
 def run(base_dir, *args, **kwargs):
@@ -23,6 +24,9 @@ def run(base_dir, *args, **kwargs):
         
     if not os.path.exists(".apm/installed"):
         os.mkdir(".apm/installed")
+
+    Repo.clone_from("https://github.com/aaalllexxx/AEngineApps", "AEngineApps")
+    clear_dir("AEngineApps/.git")
         
     with open(".apm/run.json", "w", encoding="utf-8") as file:
         file.write(json.dumps(data, indent=4, ensure_ascii=False))

@@ -8,8 +8,10 @@ def run(base_dir, *args, **kwargs):
     arg:list = kwargs["args"]
     url = arg[arg.index("-u") + 1] if "-u" in arg else  arg[arg.index("--url") + 1] if "--url" in args else arg[1]
     name = url.split("/")[-1].replace(".git", "")
-    if not os.path.exists("installed"):
-        os.mkdir("installed")
+    if not os.path.exists(".apm"):
+        print("[red][-] Директория не является проектом AEngine[/red]")
+    if not os.path.exists(".apm/installed"):
+        os.mkdir(".apm/installed")
     try:
         Repo.clone_from(url, f"installed/{name}")
     except exc.GitError:
