@@ -6,7 +6,7 @@ from rich import print
 
 def run(base_dir, *args, **kwargs):
     arg:list = kwargs["args"]
-    url = arg[arg.index("-u") + 1] if "-u" in arg else  arg[arg.index("--url") + 1] if "--url" in args else arg[1]
+    url = arg[arg.index("-u") + 1] if "-u" in arg else  arg[arg.index("--url") + 1] if "--url" in args else arg[-1]
     name = url.split("/")[-1].replace(".git", "")
     path = ".apm/installed"
     if "-g" in args:
