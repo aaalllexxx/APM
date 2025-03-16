@@ -40,7 +40,7 @@ if "apm" in " ".join(sys.argv):
             try:
                 module = SourceFileLoader(f"{install_module_path}.{executable}.{args[1]}", os.getcwd() + os.sep + ".apm" + os.sep + "installed" + os.sep + executable + os.sep + args[1] +".py").load_module()
                 module.run(base_dir)
-            except (AttributeError, ModuleNotFoundError) as e:
+            except Exception as e:
                 try:
                     import_module(f"{install_module_path}.{executable}").run(base_dir, gconf_path, args=args)
                 except ModuleNotFoundError:
