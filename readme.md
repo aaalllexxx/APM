@@ -9,6 +9,8 @@
 ---
 > docs - открыть документацию aengineapps
 ---
+> develop: module - создать шаблон модуля
+---
 > delete (apm delete) - удаление проекта AEngineApps
 ---
 > init (apm init) - инициализация проекта в качестве проекта AEngineApps
