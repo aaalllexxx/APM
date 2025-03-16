@@ -6,7 +6,7 @@ from rich import print
 
 def run(base_dir, *args, **kwargs):
     arg:list = kwargs["args"]
-    if len(arg) == 1 or "-h" in arg:
+    if "-h" in arg:
         print("Usage: apm install <flags> <url>\n    -u [--url] - Указать репозиторий\n    -g - Установить модуль глобально")
         return
     url = arg[arg.index("-u") + 1] if "-u" in arg else  arg[arg.index("--url") + 1] if "--url" in args else arg[-1]

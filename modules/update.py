@@ -7,7 +7,7 @@ from helpers import clear_dir
 
 def run(base_dir, *args, **kwargs):
     arg = kwargs["args"]
-    if len(arg) == 1 or "-h" in arg:
+    if "-h" in arg:
         print("Usage: apm update")
         return
     print("[green bold][+] Начало установки исходников...[/green bold]")

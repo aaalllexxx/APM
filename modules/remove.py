@@ -5,7 +5,7 @@ from rich import print
 
 def run(base_dir, *args, **kwargs):
     arg: list = kwargs["args"]
-    if len(arg) == 1 or "-h" in arg:
+    if "-h" in arg:
         print("Usage: apm remove <flags> <name>\n    -g - Удаление глобального модуля")
         return
     module = arg[-1]

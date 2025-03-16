@@ -7,7 +7,7 @@ from helpers import clear_dir
 
 def run(*args, **kwargs):
     arg = kwargs["args"]
-    if len(arg) == 1 or "-h" in arg:
+    if "-h" in arg:
         print("Usage: apm delete")
         return
     if os.path.isdir(".apm"):

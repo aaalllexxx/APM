@@ -7,7 +7,7 @@ from win2lin import System
 
 def run(base_dir, *args, **kwargs):
     arg = kwargs["args"]
-    if len(arg) == 1 or "-h" in arg:
+    if "-h" in arg:
         print("Usage: apm config")
         return
     try:

@@ -10,7 +10,7 @@ from helpers import System, input, FileInput
 
 def run(base_dir, gconf_path, *args, **kwargs):
     arg = kwargs["args"]
-    if len(arg) == 1 or "-h" in arg:
+    if "-h" in arg:
         print("Usage: apm run")
         return
     with open(gconf_path, encoding="utf-8") as file_config:

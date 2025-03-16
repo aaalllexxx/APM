@@ -11,7 +11,7 @@ from git import Repo
 
 def run(base_dir, *args, **kwargs):
     arg = kwargs["args"]
-    if len(arg) == 1 or "-h" in arg:
+    if "-h" in arg:
         print("Usage: apm create")
         return
     path = input("Введите название проекта:")
