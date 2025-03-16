@@ -9,11 +9,11 @@ def run(base_dir, *args, **kwargs):
     url = arg[arg.index("-u") + 1] if "-u" in arg else  arg[arg.index("--url") + 1] if "--url" in args else arg[-1]
     name = url.split("/")[-1].replace(".git", "")
     path = ".apm/installed"
-    if "-g" in args:
-        args.pop(args.index("-g"))
+    if "-g" in arg:
+        print(arg.pop(args.index("-g")))
         if not os.path.exists(base_dir + "installed"):
             path = base_dir + "installed"
-    if not os.path.exists(".apm"):
+    elif not os.path.exists(".apm"):
         print("[red][-] Директория не является проектом AEngine[/red]")
         return
     if not os.path.exists(path):
