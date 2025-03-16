@@ -4,7 +4,9 @@ from helpers import clear_dir
 from rich import print
 
 def run(base_dir, *args, **kwargs):
-    arg:list = kwargs["args"]
+    arg: list = kwargs["args"]
+    if len(arg) == 1 or "-h" in arg:
+        print("Usage: apm remove <flags> <name>\n    -g - Удаление глобального модуля")
     module = arg[-1]
     path = ".apm/installed"
     if "-g" in arg:

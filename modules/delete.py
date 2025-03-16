@@ -6,6 +6,9 @@ from rich import print
 from helpers import clear_dir
 
 def run(*args, **kwargs):
+    arg = kwargs["args"]
+    if len(arg) == 1 or "-h" in arg:
+        print("Usage: apm delete")
     if os.path.isdir(".apm"):
         dir_name = os.getcwd()
         os.chdir(os.path.dirname(dir_name))

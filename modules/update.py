@@ -6,6 +6,9 @@ from git import Repo
 from helpers import clear_dir
 
 def run(base_dir, *args, **kwargs):
+    arg = kwargs["args"]
+    if len(arg) == 1 or "-h" in arg:
+        print("Usage: apm update")
     print("[green bold][+] Начало установки исходников...[/green bold]")
     link = "https://github.com/aaalllexxx/APM/"
     app_data = os.getenv("APPDATA")

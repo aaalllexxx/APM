@@ -10,6 +10,9 @@ from git import Repo
 
 
 def run(base_dir, *args, **kwargs):
+    arg = kwargs["args"]
+    if len(arg) == 1 or "-h" in arg:
+        print("Usage: apm create")
     path = input("Введите название проекта:")
     print("[green][+] Создание проекта...[/green]")
     directory = os.path.join(os.getcwd(), path.replace(" ", "_"))
