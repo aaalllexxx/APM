@@ -13,12 +13,7 @@ def run(base_dir, *args, **kwargs):
     print("[green bold][+] Начало установки исходников...[/green bold]")
     link = "https://github.com/aaalllexxx/APM/"
     app_data = os.getenv("APPDATA")
-    try:
-        if os.path.exists(app_data + os.sep +"apm" + os.sep + "sources"):
-            clear_dir(app_data + os.sep +"apm" + os.sep + "sources")
-        os.mkdir(app_data + os.sep +"apm" + os.sep + "sources")
-    except Exception as e:
-        input(e)
+
     for file in os.listdir(app_data + os.sep + "apm"):
         file = app_data + os.sep + "apm" + os.sep + file
         try:
@@ -28,6 +23,7 @@ def run(base_dir, *args, **kwargs):
                 clear_dir(file)
         except:
             pass
+
     Repo.clone_from(link, app_data + os.sep +"apm" + os.sep + "sources")
     
     print("[green bold][+] Исходники установлены [/green bold]")
