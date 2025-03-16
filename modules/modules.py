@@ -3,8 +3,8 @@ import os
 
 def run(*args, **kwargs):
     modules = []
-    if os.path.exists("installed"):
-        modules = [file.replace(".py", "") for file in os.listdir("installed")]
+    if os.path.exists(".apm/installed"):
+        modules = [file.replace(".py", "") for file in os.listdir(".apm/installed")]
     if modules:
         print("Установленные модули:")
         for module in modules:
