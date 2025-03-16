@@ -14,10 +14,10 @@ def run(base_dir, *args, **kwargs):
     if not os.path.exists(".apm/installed"):
         os.mkdir(".apm/installed")
     try:
-        Repo.clone_from(url, f"installed/{name}")
+        Repo.clone_from(url, f".apm/installed/{name}")
     except exc.GitError:
         print(f"[red][-] {url} не является репозиторием git[/red]")
         return
-    clear_dir(f"installed/{name}/.git")
+    clear_dir(f".apm/installed/{name}/.git")
     print("[green][+] Модуль установлен[/green]")
     
