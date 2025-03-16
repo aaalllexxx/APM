@@ -8,6 +8,7 @@ def run(base_dir, *args, **kwargs):
         print("Usage: apm modules")
         return
     modules = []
+    gmodules = []
     if os.path.exists(".apm/installed"):
         modules = [file.replace(".py", "") for file in os.listdir(".apm/installed")]
     if os.path.exists(base_dir + "installed"):
