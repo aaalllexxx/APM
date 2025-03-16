@@ -25,8 +25,7 @@ def run(base_dir, *args, **kwargs):
     if not os.path.exists(".apm/installed"):
         os.mkdir(".apm/installed")
     
-    os.chdir(path)
-    Repo.clone_from("https://github.com/aaalllexxx/AEngineApps", "AEngineApps")
+    Repo.clone_from("https://github.com/aaalllexxx/AEngineApps", os.path.join(directory, "AEngineApps"))
     clear_dir("AEngineApps/.git")
         
     with open(".apm/run.json", "w", encoding="utf-8") as file:
