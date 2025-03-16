@@ -15,7 +15,7 @@ def run(base_dir, *args, **kwargs):
         print("[red][-] Директория не является проектом apm[/red]")
         return
     
-    if not os.path.exists(f".apm/installed/{module}"):
+    if not os.path.exists(path):
         print("[red][-] Модуль не найден[/red]")
         return
     
