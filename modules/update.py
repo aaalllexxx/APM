@@ -20,6 +20,7 @@ def run(base_dir, *args, **kwargs):
     except Exception as e:
         input(e)
     for file in os.listdir(app_data + os.sep + "apm"):
+        file = app_data + os.sep + "apm" + os.sep + file
         try:
             if os.path.isfile(file):
                 os.remove(file)
