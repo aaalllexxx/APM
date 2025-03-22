@@ -17,14 +17,14 @@ def run(base_dir, *args, **kwargs):
         if module is None:
             modules = [file.replace(".py", "") for file in os.listdir(".apm/installed")]
         elif os.path.exists(f".apm/installed/{module}"):
-            modules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}")]
+            modules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}") if "__" not in file]
 
         
     if os.path.exists(base_dir + "installed"):
         if module is None:
             gmodules = [file.replace(".py", "") for file in os.listdir(base_dir + "installed")]
         elif os.path.exists(f"{base_dir}installed/{module}"):
-            gmodules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}")]
+            gmodules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}") if "__" not in file]
     
     print("[blue]Модули проекта:[/blue]")
     if modules:
