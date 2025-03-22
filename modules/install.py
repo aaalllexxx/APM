@@ -7,13 +7,15 @@ from rich import print
 def run(base_dir, *args, **kwargs):
     arg:list = kwargs["args"]
     if "-h" in arg:
-        print("Usage: apm install <flags> <url>\n    -u [--url] - Указать репозиторий\n    -g - Установить модуль глобально")
+        print("Usage: apm install <flags> <url>\n    -u - Обновить указанный модуль\n    --url - Указать репозиторий\n    -g - Установить модуль глобально")
         return
-    url = arg[arg.index("-u") + 1] if "-u" in arg else  arg[arg.index("--url") + 1] if "--url" in args else arg[-1]
+    update = "-u" in arg
+    arg.remove("-u")
+    url = arg[arg.index("--url") + 1] if "--url" in args else arg[-1]
     name = url.split("/")[-1].replace(".git", "")
     path = ".apm/installed"
     if "-g" in arg:
-        arg.pop(arg.index("-g"))
+        arg.remove("-g")
         path = base_dir + "installed"
     elif not os.path.exists(".apm"):
         print("[red][-] Директория не является проектом AEngine[/red]")
@@ -21,6 +23,8 @@ def run(base_dir, *args, **kwargs):
     if not os.path.exists(path):
         os.mkdir(path)
     try:
+        if update and os.path.exists(f"{path}/{name}"):
+            clear_dir(f"{path}/{name}")
         Repo.clone_from(url, f"{path}/{name}")
     except exc.GitError:
         print(f"[red][-] {url} не является репозиторием git[/red]")
