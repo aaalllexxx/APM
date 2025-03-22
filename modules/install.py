@@ -10,7 +10,8 @@ def run(base_dir, *args, **kwargs):
         print("Usage: apm install <flags> <url>\n    -u - Обновить указанный модуль\n    --url - Указать репозиторий\n    -g - Установить модуль глобально")
         return
     update = "-u" in arg
-    arg.remove("-u")
+    if update:
+        arg.remove("-u")
     url = arg[arg.index("--url") + 1] if "--url" in args else arg[-1]
     name = url.split("/")[-1].replace(".git", "")
     path = ".apm/installed"
