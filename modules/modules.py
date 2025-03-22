@@ -1,6 +1,8 @@
 __help__ = "Просмотреть список модулей проекта"
 import os
 from rich import print
+from importlib import import_module
+from importlib.machinery import SourceFileLoader
 
 def run(base_dir, *args, **kwargs):
     arg = kwargs["args"]
