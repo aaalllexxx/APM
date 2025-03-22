@@ -17,9 +17,9 @@ def run(base_dir, *args, **kwargs):
     for file in os.listdir(app_data + os.sep + "apm"):
         fl = app_data + os.sep + "apm" + os.sep + file
         try:
-            if os.path.isfile(fl) and not "apm" in file:
+            if os.path.isfile(fl) and "apm" not in file:
                 os.remove(fl)
-            else:
+            elif "installed" not in file:
                 clear_dir(fl)
         except Exception as e:
             pass
