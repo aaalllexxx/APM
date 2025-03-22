@@ -8,7 +8,7 @@ def run(base_dir, *args, **kwargs):
     if "-h" in arg:
         print("Usage: apm modules <module_name: (optional)>")
         return
-    if len(arg) >= 1:
+    if len(arg) >= 2:
         module = arg[-1]
 
     modules = []
