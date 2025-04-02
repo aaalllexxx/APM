@@ -2,3 +2,4 @@
 global_config.json
 venv/
 executable/
+*kanban*
