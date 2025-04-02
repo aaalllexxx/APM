@@ -15,9 +15,9 @@ def run(base_dir, *args, **kwargs):
     gmodules = []
     if os.path.exists(".apm/installed"):
         if module is None:
-            modules = [file.replace(".py", "") for file in os.listdir(".apm/installed")]
+            modules = [file.replace(".py", "") for file in os.listdir(".apm/installed") if "__" not in file and "py" in file]
         elif os.path.exists(f".apm/installed/{module}"):
-            modules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}") if "__" not in file]
+            modules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}") if "__" not in file and "py" in file]
 
         
     if os.path.exists(base_dir + "installed"):

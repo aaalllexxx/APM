@@ -12,7 +12,9 @@ def run(base_dir, *args, **kwargs):
     update = "-u" in arg
     if update:
         arg.remove("-u")
-    url = arg[arg.index("--url") + 1] if "--url" in args else arg[-1]
+    url = arg[arg.index("--url") + 1] if "--url" in args else arg[-1] if "github.com" in arg[-1] else ""
+    if not url:
+        url = f"https://github.com/{arg[-2]}/{arg[-1]}"
     name = url.split("/")[-1].replace(".git", "")
     path = ".apm/installed"
     if "-g" in arg:
