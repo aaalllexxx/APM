@@ -15,16 +15,16 @@ def run(base_dir, *args, **kwargs):
     gmodules = []
     if os.path.exists(".apm/installed"):
         if module is None:
-            modules = [file.replace(".py", "") for file in os.listdir(".apm/installed") if "__" not in file and "py" in file]
+            modules = [file.replace(".py", "") for file in os.listdir(".apm/installed") if "__" not in file and ("py" in file or os.path.isdir(file))]
         elif os.path.exists(f".apm/installed/{module}"):
-            modules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}") if "__" not in file and "py" in file]
+            modules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}") if "__" not in file and ("py" in file or os.path.isdir(file))]
 
         
     if os.path.exists(base_dir + "installed"):
         if module is None:
-            gmodules = [file.replace(".py", "") for file in os.listdir(base_dir + "installed")]
+            gmodules = [file.replace(".py", "") for file in os.listdir(base_dir + "installed") if "__" not in file and ("py" in file or os.path.isdir(file))]
         elif os.path.exists(f"{base_dir}installed/{module}"):
-            gmodules = [file.replace(".py", "") for file in os.listdir(f"{base_dir}installed/{module}") if "__" not in file]
+            gmodules = [file.replace(".py", "") for file in os.listdir(f"{base_dir}installed/{module}") if "__" not in file and ("py" in file or os.path.isdir(file))]
     
     print("[blue]Модули проекта:[/blue]")
     if modules:
