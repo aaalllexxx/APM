@@ -1,4 +1,14 @@
 {
+  "host" : {
+    "type": "str",
+    "default": "127.0.0.1",
+    "required": true
+  },
+  "port" : {
+    "type": "int",
+    "default": 5000,
+    "required": true
+  },
   "debug": {
     "type": "bool",
     "default": false,
