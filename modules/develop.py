@@ -1,4 +1,4 @@
-__help__ = "help string"
+__help__ = "Модуль, создающий шаблон модуля для AEngine"
 from rich import print
 from helpers import input
 
