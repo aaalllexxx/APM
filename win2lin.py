@@ -6,6 +6,14 @@ class System:
     name = "windows" if os.name == "nt" else "linux"
     
     @classmethod
+    def get_config_dir(cls):
+        """Get platform-specific config directory"""
+        if cls.name == "windows":
+            return os.getenv('APPDATA') + os.sep
+        else:
+            return os.path.expanduser('~/.config/')
+    
+    @classmethod
     def clear(cls):
         if cls.name == "windows":
             os.system("cls")

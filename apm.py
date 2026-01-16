@@ -2,21 +2,28 @@ from argparse import ArgumentParser
 import os
 import sys
 from importlib import import_module
-import sys
 from importlib.machinery import SourceFileLoader
 
 
+def get_config_dir():
+    """Get platform-specific config directory"""
+    if os.name == 'nt':  # Windows
+        return os.getenv('APPDATA') + os.sep
+    else:  # Linux/macOS
+        return os.path.expanduser('~/.config/')
+
+
 sys.dont_write_bytecode = True
-appdata = os.getenv('APPDATA') + os.sep
-base_dir = appdata + "apm/" if os.path.exists(appdata + "/apm") else os.sep.join(__file__.split(os.sep)[:-1]) + os.sep
-gconf_path = appdata + "apm" + os.sep + "global_config.json"
+appdata = get_config_dir()
+base_dir = appdata + "apm" + os.sep if os.path.exists(appdata + "apm") else os.path.dirname(os.path.abspath(__file__)) + os.sep
+gconf_path = os.path.join(appdata, "apm", "global_config.json")
 module_path = "modules"
 install_module_path = "installed"
 available_commands = []
 helps = []
 
-if not os.path.exists(appdata + "apm"):
-    os.mkdir(appdata + "apm")
+if not os.path.exists(os.path.join(appdata, "apm")):
+    os.makedirs(os.path.join(appdata, "apm"), exist_ok=True)
 
 if not os.path.exists(gconf_path):
     with open(gconf_path, "w") as file:
