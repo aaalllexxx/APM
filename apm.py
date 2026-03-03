@@ -56,7 +56,7 @@ def print_help(commands):
         console.print("\n  [bold green]AEngine Package Manager[/bold green] [dim]v2.0[/dim]\n")
         
         # Группировка команд
-        project_cmds = ["create", "init", "delete", "run", "config", "select"]
+        project_cmds = ["create", "init", "delete", "run", "config", "select", "upgrade"]
         nav_cmds = ["goto", "list"]
         module_cmds = ["install", "remove", "modules", "develop"]
         other_cmds = ["update", "docs", "unregister"]
@@ -107,7 +107,7 @@ def print_help(commands):
             print(f"    {name} - {desc}")
 
 
-if "apm" in " ".join(sys.argv):
+if __name__ == "__main__":
     try:
         executable = sys.argv[1]
         args = sys.argv[1:]
