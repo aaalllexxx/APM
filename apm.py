@@ -49,6 +49,7 @@ def print_help(commands):
     """Красивый вывод help с группировкой."""
     try:
         from rich.console import Console
+        from rich.panel import Panel
         from rich.table import Table
         
         console = Console()
@@ -62,10 +63,10 @@ def print_help(commands):
         other_cmds = ["update", "docs", "unregister"]
         
         groups = [
-            ("Проект", project_cmds, "cyan"),
-            ("Навигация", nav_cmds, "green"),
-            ("Модули", module_cmds, "yellow"),
-            ("Прочее", other_cmds, "magenta"),
+            ("ПРОЕКТЫ", project_cmds, "cyan"),
+            ("НАВИГАЦИЯ", nav_cmds, "green"),
+            ("МОДУЛИ", module_cmds, "yellow"),
+            ("ПРОЧЕЕ", other_cmds, "magenta"),
         ]
         
         for group_name, cmd_list, color in groups:
@@ -80,8 +81,8 @@ def print_help(commands):
                     table.add_row(cmd, commands[cmd])
             
             if has_items:
-                console.print(f"  [bold {color}]{group_name}[/bold {color}]")
-                console.print(table)
+                # Рисуем красивую панель с заголовком
+                console.print(Panel(table, title=f"[bold {color}]{group_name}[/bold {color}]", title_align="left", expand=False))
                 console.print()
         
         # Показать незнакомые команды

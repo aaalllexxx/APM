@@ -56,7 +56,8 @@ def run(base_dir, gconf_path, *args, **kwargs):
             
             # Записываем путь во временный файл для apm.bat / apm.sh
             tmp = os.path.join(tempfile.gettempdir(), "apm_goto.tmp")
-            with open(tmp, "w", encoding="utf-8") as f:
+            enc = "oem" if os.name == "nt" else "utf-8"
+            with open(tmp, "w", encoding=enc) as f:
                 f.write(target_path)
             
             System.clear()
