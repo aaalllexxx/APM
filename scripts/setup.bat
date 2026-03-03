@@ -5,7 +5,7 @@ pip install -r requirements.txt
 set "parent_folder=%cd%"
 echo %parent_folder%
 
-xcopy /E /I /Y "%parent_folder%" "%AppData%\apm"
+xcopy /E /I /Y /EXCLUDE:scripts\xcopy_exclude.txt "%parent_folder%" "%AppData%\apm"
 
 rem Проверяем, есть ли путь уже в PATH
 echo %PATH% | find /i "%AppData%\apm" >nul 2>&1

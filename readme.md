@@ -13,11 +13,17 @@
 ---
 > delete (apm delete) - удаление проекта AEngineApps
 ---
+> goto (apm goto) - перейти в директорию проекта (keyboard выбор)
+---
 > init (apm init) - инициализация проекта в качестве проекта AEngineApps
 ---
-> install (apm install) - создание файла конфигураций для проекта
+> install (apm install) - установка программных модулей
+---
+> list (apm list) - просмотр списка зарегистрированных проектов
 ---
 > modules (apm modules) - просмотреть список модулей проекта
+---
+> remove (apm remove) - удаление загруженного модуля
 ---
 > run (apm run) - запуск проекта AEngineApps
 ---
