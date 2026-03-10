@@ -9,27 +9,17 @@ from importlib.machinery import SourceFileLoader
 
 def get_config_dir():
     """Get platform-specific config directory"""
-    if os.name == 'nt':  # Windows
-        return os.getenv('APPDATA') + os.sep
-    else:  # Linux/macOS
-        return os.path.expanduser('~/.config/')
-
+    return os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 sys.dont_write_bytecode = True
-appdata = get_config_dir()
-base_dir = appdata + "apm" + os.sep if os.path.exists(appdata + "apm") else os.path.dirname(os.path.abspath(__file__)) + os.sep
-gconf_path = os.path.join(appdata, "apm", "global_config.json")
+base_dir = get_config_dir()
+gconf_path = os.path.join(base_dir, "global_config.json")
 module_path = "modules"
 install_module_path = "installed"
-
-if not os.path.exists(os.path.join(appdata, "apm")):
-    os.makedirs(os.path.join(appdata, "apm"), exist_ok=True)
 
 if not os.path.exists(gconf_path):
     with open(gconf_path, "w") as file:
         file.write("{}")
-
-
 def get_commands():
     """Загружает доступные команды и группирует их."""
     commands = {}
