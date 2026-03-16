@@ -14,7 +14,7 @@ def run(base_dir, *args, **kwargs):
     print("[green bold][+] Начало установки исходников...[/green bold]")
     link = "https://github.com/aaalllexxx/APM/"
     config_dir = System.get_config_dir()
-    apm_dir = os.path.join(config_dir, "apm")
+    apm_dir = config_dir
 
     if not os.path.exists(apm_dir):
         print(f"[red][-] Директория APM не найдена: {apm_dir}[/red]")
