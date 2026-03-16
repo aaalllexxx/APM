@@ -48,9 +48,35 @@ def run(base_dir, gconf_path, *args, **kwargs):
     print(f"[green][+] Запуск проекта '{data['project_name']}'...[/green]")
     try:
         interpreter = g_config.get("interpreter")
-        file = data["main_file"].replace(" ", '" "')
-        System.run(f'{interpreter or "python"} {file}', 
-                    f'{interpreter or "python3"} {file}')
+        
+        # Проверяем, существует ли указанный интерпретатор
+        if interpreter and not os.path.exists(interpreter):
+            print(f"[yellow][!] Указанный интерпретатор не найден: {interpreter}[/yellow]")
+            interpreter = None
+            
+        interpreter_win = interpreter or "python"
+        
+        # На Linux по умолчанию используем venv от apm, если он есть
+        apm_venv = os.path.expanduser("~/.config/apm/venv/bin/python3")
+        interpreter_lin = interpreter or (apm_venv if os.path.exists(apm_venv) else "python3")
+        
+        main_file = data["main_file"]
+        
+        # Настройка PYTHONPATH для нахождения AEngineApps (в корне проекта или выше)
+        env = os.environ.copy()
+        project_root = os.getcwd() # Текущая директория проекта (например, test/)
+        parent_dir = os.path.dirname(project_root) # Корень AEngine (где лежит AEngineApps)
+        
+        # Добавляем в PYTHONPATH текущую директорию и ее родителя
+        new_paths = [project_root, parent_dir]
+        current_pythonpath = env.get("PYTHONPATH", "")
+        if current_pythonpath:
+            new_paths.append(current_pythonpath)
+        
+        env["PYTHONPATH"] = os.pathsep.join(new_paths)
+
+        System.run(f'"{interpreter_win}" "{main_file}"', 
+                    f'"{interpreter_lin}" "{main_file}"', env=env)
         print(f"[green][+] Проект '{data['project_name']}' отработал успешно.[/green]")
 
     except FileNotFoundError:
