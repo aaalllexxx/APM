@@ -62,6 +62,12 @@ def run(base_dir, gconf_path, *args, **kwargs):
         
         main_file = data["main_file"]
         
+        # Если путь абсолютный и файл не существует - пробуем найти его в текущей папке
+        if os.path.isabs(main_file) and not os.path.exists(main_file):
+            filename = os.path.basename(main_file)
+            if os.path.exists(filename):
+                main_file = filename
+        
         # Настройка PYTHONPATH для нахождения AEngineApps (в корне проекта или выше)
         env = os.environ.copy()
         project_root = os.getcwd() # Текущая директория проекта (например, test/)
