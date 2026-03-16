@@ -1,17 +1,50 @@
 @echo off
-cd %~dp0
-cd ..
-pip install -r requirements.txt
-set "parent_folder=%cd%"
-echo %parent_folder%
+setlocal enabledelayedexpansion
 
-xcopy /E /I /Y /EXCLUDE:scripts\xcopy_exclude.txt "%parent_folder%" "%AppData%\apm"
-copy /Y "%parent_folder%\apm.ps1" "%AppData%\apm\apm.ps1"
+:: AEngine Unified Installer for Windows
+:: This script sets up APM, Security module, and all project dependencies.
 
-rem Проверяем, есть ли путь уже в PATH
-echo %PATH% | find /i "%AppData%\apm" >nul 2>&1
-if %errorlevel% neq 0 (
-    setx PATH "%AppData%\apm;%PATH%" /M
+set "PROJECT_ROOT=%~dp0"
+set "APM_DIR=%APPDATA%\apm"
+
+echo ==========================================
+echo     AEngine Zero-Configuration Setup
+echo ==========================================
+
+:: Create config directory
+if not exist "%APM_DIR%" mkdir "%APM_DIR%"
+if not exist "%APM_DIR%\modules" mkdir "%APM_DIR%\modules"
+
+:: Create virtual environment
+echo [+] Creating virtual environment in %APM_DIR%\venv...
+python -m venv "%APM_DIR%\venv"
+if errorlevel 1 (
+    echo [-] Failed to create virtual environment. Ensure Python is in PATH.
+    pause
+    exit /b 1
 )
 
-exit
+:: Update pip and install requirements
+echo [+] Updating pip...
+"%APM_DIR%\venv\Scripts\python.exe" -m pip install --upgrade pip
+
+echo [+] Installing project dependencies...
+if exist "%PROJECT_ROOT%\requirements.txt" (
+    "%APM_DIR%\venv\Scripts\python.exe" -m pip install -r "%PROJECT_ROOT%\requirements.txt"
+) else (
+    echo [!] requirements.txt not found.
+)
+
+:: Copy APM files
+echo [+] Synchronizing APM modules...
+xcopy /E /Y /Q "%PROJECT_ROOT%APM\*" "%APM_DIR%\"
+
+:: Add to user PATH if not already there
+echo [+] Registering 'apm' command for current user...
+setx PATH "%PATH%;%APM_DIR%" >nul 2>&1
+
+echo.
+echo [+] Setup complete! AEngine is ready to use.
+echo [+] Please restart your terminal/IDE to use 'apm' command.
+echo ==========================================
+pause
