@@ -1,5 +1,18 @@
 # Changelog — APM v2.0
 
+## [2.1.0] — 2026-03-17
+### Кроссплатформенность
+- **Все пути** заменены на `os.path.join()` вместо конкатенации строк (`config.py`, `install.py`, `modules.py`, `remove.py`)
+- **`apm.sh`** автоматически использует venv python (`~/.config/apm/venv/bin/python3`) если доступен, иначе fallback на `python3`
+- **`setup.sh`** / **`setup.bat`** — исправлен `PROJECT_ROOT` (указывал на `scripts/` вместо корня APM), убран `--break-system-packages`
+- **`win2lin.py`** — `System.run()` упрощён (единый `subprocess.run`), добавлены docstrings
+
+### Исправления
+- **Обработка ошибок в `apm.py`**: ошибки внутри модулей (например `ModuleNotFoundError` из-за отсутствия зависимости) больше не маскируются как "Команда не опознана" — теперь показывается реальный traceback и имя отсутствующего пакета
+- **Deprecated API**: `SourceFileLoader.load_module()` заменён на `importlib.util.spec_from_file_location()` в `apm.py` и `modules/sec.py`
+- **`modules/update.py`**: `System.run()` получал список вместо строки — исправлено
+- **`modules/sec.py`**: улучшены сообщения об ошибках, добавлен список доступных подкоманд
+
 ## [2.0.3] — 2026-03-16
 ### Улучшения
 - **Консолидация ядра**: Фреймворк `AEngineApps` перенесен в корень проекта для обеспечения единого источника кода и предотвращения конфликтов импорта.

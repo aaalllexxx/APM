@@ -18,12 +18,12 @@ def run(base_dir, *args, **kwargs):
     path = ".apm/installed"
     if "-g" in arg:
         arg.pop(arg.index("-g"))
-        path = base_dir + "installed"
+        path = os.path.join(base_dir, "installed")
     elif not os.path.exists(".apm"):
         print("[red][-] Директория не является проектом apm[/red]")
         return
     
-    module_path = f"{path}/{module}"
+    module_path = os.path.join(path, module)
     if not os.path.exists(module_path):
         print(f"[red][-] Модуль '{module}' не найден[/red]")
         return

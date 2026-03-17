@@ -4,7 +4,9 @@ setlocal enabledelayedexpansion
 :: AEngine Unified Installer for Windows
 :: This script sets up APM, Security module, and all project dependencies.
 
-set "PROJECT_ROOT=%~dp0"
+:: SCRIPT_DIR = директория скрипта (scripts\), APM_ROOT = на уровень выше
+set "SCRIPT_DIR=%~dp0"
+set "APM_ROOT=%SCRIPT_DIR%.."
 set "APM_DIR=%APPDATA%\apm"
 
 echo ==========================================
@@ -29,15 +31,15 @@ echo [+] Updating pip...
 "%APM_DIR%\venv\Scripts\python.exe" -m pip install --upgrade pip
 
 echo [+] Installing project dependencies...
-if exist "%PROJECT_ROOT%\requirements.txt" (
-    "%APM_DIR%\venv\Scripts\python.exe" -m pip install -r "%PROJECT_ROOT%\requirements.txt"
+if exist "%APM_ROOT%\requirements.txt" (
+    "%APM_DIR%\venv\Scripts\python.exe" -m pip install -r "%APM_ROOT%\requirements.txt"
 ) else (
-    echo [!] requirements.txt not found.
+    echo [!] requirements.txt not found in %APM_ROOT%.
 )
 
-:: Copy APM files
+:: Copy APM files from APM root (not from scripts/)
 echo [+] Synchronizing APM modules...
-xcopy /E /Y /Q "%PROJECT_ROOT%APM\*" "%APM_DIR%\"
+xcopy /E /Y /Q "%APM_ROOT%\*" "%APM_DIR%\"
 
 :: Add to user PATH if not already there
 echo [+] Registering 'apm' command for current user...

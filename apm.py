@@ -3,9 +3,8 @@
 from argparse import ArgumentParser
 import os
 import sys
-from importlib import import_module
-from importlib.machinery import SourceFileLoader
-
+import importlib
+import importlib.util
 
 def get_config_dir():
     """Get platform-specific config directory"""
@@ -20,18 +19,23 @@ install_module_path = "installed"
 if not os.path.exists(gconf_path):
     with open(gconf_path, "w") as file:
         file.write("{}")
+
 def get_commands():
     """Загружает доступные команды и группирует их."""
     commands = {}
-    for prog_name in os.listdir(os.path.join(base_dir, "modules")):
+    modules_dir = os.path.join(base_dir, "modules")
+    if not os.path.isdir(modules_dir):
+        return commands
+    for prog_name in os.listdir(modules_dir):
         if prog_name.startswith("__"):
             continue
         name = prog_name.split(".")[0]
         try:
-            mod = import_module(f"{module_path}.{name}")
+            mod = importlib.import_module(f"{module_path}.{name}")
             commands[name] = getattr(mod, "__help__", "")
-        except Exception:
-            commands[name] = ""
+        except Exception as e:
+            # Показываем имя модуля, но не падаем — чтобы help работал даже при сломанных модулях
+            commands[name] = f"[ошибка загрузки: {e}]"
     return commands
 
 
@@ -98,6 +102,17 @@ def print_help(commands):
             print(f"    {name} - {desc}")
 
 
+def _load_module_from_file(name, filepath):
+    """Загружает Python-модуль из файла через importlib (без deprecated load_module)."""
+    spec = importlib.util.spec_from_file_location(name, filepath)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Не удалось загрузить спецификацию модуля: {filepath}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 if __name__ == "__main__":
     try:
         executable = sys.argv[1]
@@ -107,24 +122,64 @@ if __name__ == "__main__":
             print_help(get_commands())
         else:
             try:
-                import_module(f"{module_path}.{executable}").run(base_dir, gconf_path, args=args)
+                importlib.import_module(f"{module_path}.{executable}").run(base_dir, gconf_path, args=args)
             except ModuleNotFoundError as e:
-                try:
-                    module = SourceFileLoader(
-                        f"{install_module_path}.{executable}.{args[1]}",
-                        os.getcwd() + os.sep + ".apm" + os.sep + "installed" + os.sep + executable + os.sep + args[1] + ".py"
-                    ).load_module()
-                    module.run(base_dir)
-                except Exception:
+                # Ключевая проверка: если e.name совпадает с запрашиваемым модулем —
+                # значит сам модуль не найден. Если e.name другое — ошибка внутри модуля
+                # (не хватает зависимости).
+                expected_module = f"{module_path}.{executable}"
+                if e.name == expected_module or e.name == executable:
+                    # Модуль APM не найден — пробуем загрузить как локальный (.apm/installed/)
                     try:
-                        import_module(f"{install_module_path}.{executable}.{args[1]}").run(base_dir, gconf_path, args=args)
-                    except (ModuleNotFoundError, IndexError):
-                        print(f"Команда {executable} не опознана.")
-                    except AttributeError:
-                        import_module(f"{install_module_path}.{executable}").run(base_dir)
+                        local_module_dir = os.path.join(os.getcwd(), ".apm", "installed", executable)
+                        
+                        if not os.path.exists(local_module_dir):
+                            print(f"Команда '{executable}' не найдена.")
+                            print(f"  Используйте 'apm --help' для списка доступных команд.")
+                            sys.exit(1)
+
+                        if len(args) < 2:
+                            module_file = os.path.join(local_module_dir, "init.py")
+                            if not os.path.exists(module_file):
+                                module_file = os.path.join(local_module_dir, "__init__.py")
+                        else:
+                            module_file = os.path.join(local_module_dir, args[1] + ".py")
+                        
+                        if os.path.exists(module_file):
+                            if local_module_dir not in sys.path:
+                                sys.path.insert(0, local_module_dir)
+                                
+                            module = _load_module_from_file(f"{executable}.subcommand", module_file)
+                            
+                            if hasattr(module, "run"):
+                                module.run(base_dir, gconf_path=gconf_path, args=args[2:] if len(args) > 1 else [])
+                            else:
+                                print(f"[!] В модуле {module_file} не найдена функция run()")
+                        else:
+                            print(f"Команда '{executable}' не найдена.")
+                            print(f"  Используйте 'apm --help' для списка доступных команд.")
+                    
+                    except ModuleNotFoundError as inner_e:
+                        import traceback
+                        print(f"[!] Ошибка зависимости при загрузке '{executable}': отсутствует модуль '{inner_e.name}'")
+                        traceback.print_exc()
+                    except Exception:
+                        import traceback
+                        print(f"[!] Ошибка при выполнении команды '{executable}':")
+                        traceback.print_exc()
+                else:
+                    # Модуль APM найден, но внутри него ошибка импорта — показываем реальную ошибку
+                    import traceback
+                    print(f"[!] Ошибка при выполнении '{executable}': отсутствует модуль '{e.name}'")
+                    print(f"    Установите его: pip install {e.name}")
+                    traceback.print_exc()
 
             except AttributeError:
-                print(f"Команда {executable} пока не реализована.") 
+                print(f"Команда '{executable}' пока не реализована.") 
+            except Exception:
+                import traceback
+                print(f"[!] Ошибка при выполнении команды '{executable}':")
+                traceback.print_exc()
                 
     except IndexError:
         print_help(get_commands())

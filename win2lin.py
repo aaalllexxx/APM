@@ -3,6 +3,7 @@ import subprocess
 import tempfile
     
 class System:
+    """Кроссплатформенная абстракция для Windows/Linux операций."""
     name = "windows" if os.name == "nt" else "linux"
     
     @classmethod
@@ -24,6 +25,7 @@ class System:
 
     @classmethod
     def clear(cls):
+        """Очистка консоли."""
         if cls.name == "windows":
             os.system("cls")
         else:
@@ -31,14 +33,16 @@ class System:
     
     @classmethod
     def run(cls, win_command, lin_command, env=None):
-        if cls.name == "windows":
+        """Запускает платформо-специфичную команду. Возвращает код возврата."""
+        command = win_command if cls.name == "windows" else lin_command
+        try:
+            result = subprocess.run(command, shell=True, env=env)
+            return result.returncode
+        except FileNotFoundError:
+            # Fallback: попробовать через subprocess.call
             try:
-                subprocess.check_call(win_command, shell=True, env=env)
-            except FileNotFoundError:
-                subprocess.run(win_command, shell=True, env=env)
-        else:
-            try:
-                subprocess.check_call(lin_command, shell=True, env=env)
-            except FileNotFoundError:
-                subprocess.run(lin_command, shell=True, env=env)
+                return subprocess.call(command, shell=True, env=env)
+            except Exception:
+                return 1
+
     

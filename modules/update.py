@@ -52,8 +52,8 @@ def run(base_dir, *args, **kwargs):
     
     try:
         System.run(
-            ["cmd.exe", "/c", "start", setup_bat],
-            ["bash", setup_sh]
+            f'cmd.exe /c start "" "{setup_bat}"',
+            f'bash "{setup_sh}"'
         )
     except Exception as e:
         print(f"[red][-] Ошибка запуска скрипта обновления: {e}[/red]")

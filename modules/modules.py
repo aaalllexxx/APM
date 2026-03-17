@@ -13,28 +13,46 @@ def run(base_dir, *args, **kwargs):
 
     modules = []
     gmodules = []
-    if os.path.exists(".apm/installed"):
-        if module is None:
-            modules = [file.replace(".py", "") for file in os.listdir(".apm/installed") if "__" not in file and ("py" in file or os.path.isdir(f".apm/installed/{file}"))]
-        elif os.path.exists(f".apm/installed/{module}"):
-            modules = [file.replace(".py", "") for file in os.listdir(f".apm/installed/{module}") if "__" not in file and ("py" in file or os.path.isdir(f".apm/installed/{module}/{file}"))]
+    local_installed = os.path.join(".apm", "installed")
+    global_installed = os.path.join(base_dir, "installed")
 
-        
-    if os.path.exists(base_dir + "installed"):
+    if os.path.exists(local_installed):
         if module is None:
-            gmodules = [file.replace(".py", "") for file in os.listdir(base_dir + "installed") if "__" not in file and ("py" in file or os.path.isdir(f"{base_dir}installed/{file}"))]
-        elif os.path.exists(f"{base_dir}installed/{module}"):
-            gmodules = [file.replace(".py", "") for file in os.listdir(f"{base_dir}installed/{module}") if "__" not in file and ("py" in file or os.path.isdir(f"{base_dir}installed/{module}/{file}"))]
-    
+            modules = [
+                file.replace(".py", "") for file in os.listdir(local_installed)
+                if not file.startswith("__") and (file.endswith(".py") or os.path.isdir(os.path.join(local_installed, file)))
+            ]
+        else:
+            module_dir = os.path.join(local_installed, module)
+            if os.path.exists(module_dir):
+                modules = [
+                    file.replace(".py", "") for file in os.listdir(module_dir)
+                    if not file.startswith("__") and (file.endswith(".py") or os.path.isdir(os.path.join(module_dir, file)))
+                ]
+
+    if os.path.exists(global_installed):
+        if module is None:
+            gmodules = [
+                file.replace(".py", "") for file in os.listdir(global_installed)
+                if not file.startswith("__") and (file.endswith(".py") or os.path.isdir(os.path.join(global_installed, file)))
+            ]
+        else:
+            gmodule_dir = os.path.join(global_installed, module)
+            if os.path.exists(gmodule_dir):
+                gmodules = [
+                    file.replace(".py", "") for file in os.listdir(gmodule_dir)
+                    if not file.startswith("__") and (file.endswith(".py") or os.path.isdir(os.path.join(gmodule_dir, file)))
+                ]
+
     print("[blue]Модули проекта:[/blue]")
     if modules:
-        for module in modules:
-            print(f"[green] - {module}[/green]")
+        for mod in modules:
+            print(f"[green] - {mod}[/green]")
     else:
         print("[red][-] Нет установленных модулей[/red]\n")
     print("[blue]Глобальные модули:[/blue]")
     if gmodules:
-        for module in gmodules:
-            print(f"[green] - {module}[/green]")
+        for mod in gmodules:
+            print(f"[green] - {mod}[/green]")
     else:
         print("[red][-] Нет установленных модулей[/red]\n")

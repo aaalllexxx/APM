@@ -4,7 +4,9 @@
 
 set -e
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# PROJECT_ROOT = директория где лежит этот скрипт (scripts/), поднимаемся на уровень выше к корню APM
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APM_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 APM_DIR="$HOME/.config/apm"
 
 echo "=========================================="
@@ -22,13 +24,10 @@ echo "[+] Updating pip..."
 "$APM_DIR/venv/bin/python3" -m pip install --upgrade pip
 
 echo "[+] Installing project dependencies..."
-if [ -f "$PROJECT_ROOT/requirements.txt" ]; then
-    "$APM_DIR/venv/bin/python3" -m pip install -r "$PROJECT_ROOT/requirements.txt" || {
-        echo "[!] Pip failed, attempting with --break-system-packages..."
-        "$APM_DIR/venv/bin/python3" -m pip install -r "$PROJECT_ROOT/requirements.txt" --break-system-packages
-    }
+if [ -f "$APM_ROOT/requirements.txt" ]; then
+    "$APM_DIR/venv/bin/python3" -m pip install -r "$APM_ROOT/requirements.txt"
 else
-    echo "[!] requirements.txt not found in $PROJECT_ROOT"
+    echo "[!] requirements.txt not found in $APM_ROOT"
 fi
 
 # Copy APM files to global config
@@ -37,8 +36,8 @@ mkdir -p "$APM_DIR/modules"
 mkdir -p "$APM_DIR/scripts"
 mkdir -p "$APM_DIR/sources"
 
-# Copy core APM files
-cp -r "$PROJECT_ROOT/APM/"* "$APM_DIR/"
+# Copy core APM files from the APM root (not from scripts/)
+cp -r "$APM_ROOT/"* "$APM_DIR/"
 
 # Ensure runner is executable
 chmod +x "$APM_DIR/apm.sh"

@@ -17,7 +17,7 @@ def run(base_dir, *args, **kwargs):
         print("[red][-] Используйте 'apm init' для инициализации.[/red]")
         return
     
-    template_path = base_dir + "/config_template.json"
+    template_path = os.path.join(base_dir, "config_template.json")
     if not os.path.exists(template_path):
         print(f"[red][-] Шаблон конфигурации не найден: {template_path}[/red]")
         return

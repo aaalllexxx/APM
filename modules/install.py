@@ -35,7 +35,7 @@ def run(base_dir, *args, **kwargs):
     path = ".apm/installed"
     if "-g" in arg:
         arg.remove("-g")
-        path = base_dir + "installed"
+        path = os.path.join(base_dir, "installed")
     elif not os.path.exists(".apm"):
         print("[red][-] Директория не является проектом AEngine[/red]")
         return
@@ -48,17 +48,18 @@ def run(base_dir, *args, **kwargs):
             return
     
     try:
-        if update and os.path.exists(f"{path}/{name}"):
-            clear_dir(f"{path}/{name}")
+        module_dir = os.path.join(path, name)
+        if update and os.path.exists(module_dir):
+            clear_dir(module_dir)
         print(f"[green][+] Загрузка модуля '{name}'...[/green]")
-        Repo.clone_from(url, f"{path}/{name}")
+        Repo.clone_from(url, module_dir)
     except exc.GitError as e:
         print(f"[red][-] Ошибка загрузки: {url}[/red]")
         print(f"[red]    Убедитесь, что URL верный и есть доступ к сети.[/red]")
         return
     
     try:
-        git_dir = f"{path}/{name}/.git"
+        git_dir = os.path.join(path, name, ".git")
         if os.path.exists(git_dir):
             clear_dir(git_dir)
     except Exception as e:
