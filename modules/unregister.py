@@ -1,4 +1,5 @@
 __help__ = "Удаление проекта из реестра APM"
+__module_type__ = "ПРОЧЕЕ"
 
 import json
 import os

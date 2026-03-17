@@ -1,4 +1,5 @@
 __help__ = "Удаление проекта"
+__module_type__ = "ПРОЕКТЫ"
 import os
 import shutil
 from helpers import input

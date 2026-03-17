@@ -1,4 +1,5 @@
 __help__ = "Выбор проекта в качестве глобального"
+__module_type__ = "ПРОЕКТЫ"
 
 import os
 from json_dict import JsonDict

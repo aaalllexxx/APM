@@ -1,4 +1,5 @@
 __help__ = "Обновление AEngineApps в текущем проекте"
+__module_type__ = "ПРОЕКТЫ"
 
 import os
 import shutil

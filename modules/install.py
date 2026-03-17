@@ -1,4 +1,5 @@
 __help__ = "Установка программных модулей"
+__module_type__ = "МОДУЛИ"
 from git import Repo, exc
 from helpers import clear_dir
 import os

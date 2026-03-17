@@ -1,4 +1,5 @@
 __help__ = "Просмотреть список модулей проекта"
+__module_type__ = "МОДУЛИ"
 import os
 from rich import print
 

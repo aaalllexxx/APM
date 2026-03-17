@@ -1,4 +1,5 @@
 __help__ = "Запуск проекта AEngine"
+__module_type__ = "ПРОЕКТЫ"
 
 
 import json

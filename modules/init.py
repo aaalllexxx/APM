@@ -1,4 +1,5 @@
 __help__ = "Регистрация проекта в качестве проекта AEngine"
+__module_type__ = "ПРОЕКТЫ"
 
 import json
 import os

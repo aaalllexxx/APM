@@ -1,4 +1,5 @@
 __help__ = "удаляет загруженный модуль"
+__module_type__ = "МОДУЛИ"
 import os
 from helpers import clear_dir
 from rich import print

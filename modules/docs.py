@@ -1,4 +1,5 @@
 __help__ = "Открыть документацию AEngineApps"
+__module_type__ = "ПРОЧЕЕ"
 import webbrowser
 
 def run(*args, **kwargs):

@@ -23,19 +23,48 @@ if not os.path.exists(gconf_path):
 def get_commands():
     """Загружает доступные команды и группирует их."""
     commands = {}
+    
+    # 1. Загрузка встроенных модулей (APM/modules/)
     modules_dir = os.path.join(base_dir, "modules")
-    if not os.path.isdir(modules_dir):
-        return commands
-    for prog_name in os.listdir(modules_dir):
-        if prog_name.startswith("__"):
-            continue
-        name = prog_name.split(".")[0]
-        try:
-            mod = importlib.import_module(f"{module_path}.{name}")
-            commands[name] = getattr(mod, "__help__", "")
-        except Exception as e:
-            # Показываем имя модуля, но не падаем — чтобы help работал даже при сломанных модулях
-            commands[name] = f"[ошибка загрузки: {e}]"
+    if os.path.isdir(modules_dir):
+        for prog_name in os.listdir(modules_dir):
+            if prog_name.startswith("__") or not prog_name.endswith(".py"):
+                continue
+            name = prog_name.split(".")[0]
+            try:
+                mod = importlib.import_module(f"{module_path}.{name}")
+                desc = getattr(mod, "__help__", "")
+                mod_type = getattr(mod, "__module_type__", "ПРОЧЕЕ")
+                commands[name] = {"help": desc, "type": mod_type}
+            except Exception as e:
+                commands[name] = {"help": f"[ошибка загрузки: {e}]", "type": "ОШИБКИ"}
+
+    # 2. Загрузка локальных пользовательских модулей (.apm/installed/)
+    local_installed_dir = os.path.join(os.getcwd(), ".apm", "installed")
+    if os.path.isdir(local_installed_dir):
+        for name in os.listdir(local_installed_dir):
+            mod_dir = os.path.join(local_installed_dir, name)
+            if not os.path.isdir(mod_dir):
+                continue
+            
+            # Пропускаем, если такой модуль уже есть (встроенный имеет приоритет)
+            if name in commands:
+                continue
+                
+            # Ищем точку входа (init.py или __init__.py)
+            entry_file = os.path.join(mod_dir, "init.py")
+            if not os.path.exists(entry_file):
+                entry_file = os.path.join(mod_dir, "__init__.py")
+                
+            if os.path.exists(entry_file):
+                try:
+                    mod = _load_module_from_file(f"local_{name}", entry_file)
+                    desc = getattr(mod, "__help__", f"Локальный модуль {name}")
+                    mod_type = getattr(mod, "__module_type__", "ЛОКАЛЬНЫЕ ПЛАГИНЫ")
+                    commands[name] = {"help": desc, "type": mod_type}
+                except Exception as e:
+                    commands[name] = {"help": f"[ошибка локального модуля: {e}]", "type": "ОШИБКИ"}
+
     return commands
 
 
@@ -50,44 +79,53 @@ def print_help(commands):
         
         console.print("\n  [bold green]AEngine Package Manager[/bold green] [dim]v2.0[/dim]\n")
         
-        # Группировка команд
-        project_cmds = ["create", "init", "delete", "run", "config", "select", "upgrade"]
-        nav_cmds = ["goto", "list"]
-        module_cmds = ["install", "remove", "modules", "develop"]
-        other_cmds = ["update", "docs", "unregister"]
+        # Динамическая группировка команд
+        groups_data = {}
+        for cmd, data in commands.items():
+            mod_type = data["type"].upper()
+            if mod_type not in groups_data:
+                groups_data[mod_type] = []
+            groups_data[mod_type].append((cmd, data["help"]))
+            
+        # Цвета для популярных групп, остальные случайные из палитры
+        color_map = {
+            "ПРОЕКТЫ": "cyan",
+            "НАВИГАЦИЯ": "green",
+            "МОДУЛИ": "yellow",
+            "ПРОЧЕЕ": "magenta",
+            "ОШИБКИ": "red"
+        }
+        fallback_colors = ["blue", "dark_orange", "purple", "dark_sea_green", "steel_blue"]
         
-        groups = [
-            ("ПРОЕКТЫ", project_cmds, "cyan"),
-            ("НАВИГАЦИЯ", nav_cmds, "green"),
-            ("МОДУЛИ", module_cmds, "yellow"),
-            ("ПРОЧЕЕ", other_cmds, "magenta"),
-        ]
+        # Сортировка групп: Проекты, Навигация, Модули... Ошибки в конце
+        order_priority = {"ПРОЕКТЫ": 0, "НАВИГАЦИЯ": 1, "МОДУЛИ": 2, "ПРОЧЕЕ": 98, "ОШИБКИ": 99}
+        sorted_groups = sorted(groups_data.keys(), key=lambda k: order_priority.get(k, 50))
         
-        for group_name, cmd_list, color in groups:
+        color_idx = 0
+        for group_name in sorted_groups:
+            cmd_list = groups_data[group_name]
+            
+            color = color_map.get(group_name)
+            if not color:
+                color = fallback_colors[color_idx % len(fallback_colors)]
+                color_idx += 1
+                
             table = Table(show_header=False, box=None, padding=(0, 2))
             table.add_column(style=f"bold {color}", width=14)
             table.add_column(style="white")
             
-            has_items = False
-            for cmd in cmd_list:
-                if cmd in commands:
-                    has_items = True
-                    table.add_row(cmd, commands[cmd])
-            
-            if has_items:
-                # Рисуем красивую панель с заголовком
-                console.print(Panel(table, title=f"[bold {color}]{group_name}[/bold {color}]", title_align="left", expand=False))
-                console.print()
-        
-        # Закоментирован/удален вывод 'Другое', так как внешние модули (как sec)
-        # не должны автоматически попадать в список базовых команд APM.
+            for cmd, desc in sorted(cmd_list):
+                table.add_row(cmd, desc)
+                
+            console.print(Panel(table, title=f"[bold {color}]{group_name}[/bold {color}]", title_align="left", expand=False))
+            console.print()
             
     except ImportError:
         # Fallback без rich
         print("\nИспользование: apm <опции> <флаги>\n")
         print("Доступные опции:")
-        for name, desc in commands.items():
-            print(f"    {name} - {desc}")
+        for name, data in commands.items():
+            print(f"    {name} - {data['help']} ({data['type']})")
 
 
 def _load_module_from_file(name, filepath):

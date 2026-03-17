@@ -1,4 +1,5 @@
 __help__ = "Создание нового проекта"
+__module_type__ = "ПРОЕКТЫ"
 
 import json
 import os

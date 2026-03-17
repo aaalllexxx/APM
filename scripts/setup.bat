@@ -6,7 +6,7 @@ setlocal enabledelayedexpansion
 
 :: SCRIPT_DIR = директория скрипта (scripts\), APM_ROOT = на уровень выше
 set "SCRIPT_DIR=%~dp0"
-set "APM_ROOT=%SCRIPT_DIR%.."
+for %%I in ("%SCRIPT_DIR%..") do set "APM_ROOT=%%~dpfI"
 set "APM_DIR=%APPDATA%\apm"
 
 echo ==========================================
@@ -34,7 +34,7 @@ echo [+] Installing project dependencies...
 if exist "%APM_ROOT%\requirements.txt" (
     "%APM_DIR%\venv\Scripts\python.exe" -m pip install -r "%APM_ROOT%\requirements.txt"
 ) else (
-    echo [!] requirements.txt not found in %APM_ROOT%.
+    echo [-] requirements.txt not found in %APM_ROOT%.
 )
 
 :: Copy APM files from APM root (not from scripts/)

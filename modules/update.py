@@ -1,4 +1,5 @@
 __help__ = "Обновить менеджер проектов apm"
+__module_type__ = "ПРОЧЕЕ"
 import os
 import subprocess
 from rich import print

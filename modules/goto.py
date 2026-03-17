@@ -1,4 +1,5 @@
 __help__ = "Перейти в директорию проекта"
+__module_type__ = "НАВИГАЦИЯ"
 
 import json
 import os

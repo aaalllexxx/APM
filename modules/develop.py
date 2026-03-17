@@ -1,4 +1,5 @@
 __help__ = "Создание шаблонов модулей и экранов"
+__module_type__ = "МОДУЛИ"
 from rich import print
 from helpers import input
 import os
