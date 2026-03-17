@@ -79,20 +79,8 @@ def print_help(commands):
                 console.print(Panel(table, title=f"[bold {color}]{group_name}[/bold {color}]", title_align="left", expand=False))
                 console.print()
         
-        # Показать незнакомые команды
-        known = set()
-        for _, cmd_list, _ in groups:
-            known.update(cmd_list)
-        unknown = {k: v for k, v in commands.items() if k not in known}
-        if unknown:
-            table = Table(show_header=False, box=None, padding=(0, 2))
-            table.add_column(style="bold white", width=14)
-            table.add_column(style="white")
-            for cmd, desc in unknown.items():
-                table.add_row(cmd, desc)
-            console.print(f"  [bold white]Другое[/bold white]")
-            console.print(table)
-            console.print()
+        # Закоментирован/удален вывод 'Другое', так как внешние модули (как sec)
+        # не должны автоматически попадать в список базовых команд APM.
             
     except ImportError:
         # Fallback без rich
