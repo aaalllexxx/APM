@@ -3,3 +3,5 @@ global_config.json
 venv/
 executable/
 *kanban*
+__pycache__/
+*.py[cod]
