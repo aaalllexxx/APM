@@ -18,7 +18,7 @@ def register_project(gconf_path, name, path):
             g_config = json.loads(f.read() or "{}")
     except (FileNotFoundError, json.JSONDecodeError):
         g_config = {}
-    
+
     projects = g_config.get("projects", [])
     if not any(p.get("path") == path for p in projects):
         projects.append({"name": name, "path": path})
@@ -44,24 +44,35 @@ def clear_dir(path):
 
 
 def handle_remove_readonly(func, path, exc):
-  excvalue = exc
-  if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
-      os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
-      func(path)
-  else:
-      raise
+    excvalue = exc
+    if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        func(path)
+    else:
+        raise
 
 
 def handle_remove_readonly_legacy(func, path, exc_info):
-  excvalue = exc_info[1]
-  if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
-      os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
-      func(path)
-  else:
-      raise excvalue
+    excvalue = exc_info[1]
+    if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        func(path)
+    else:
+        raise excvalue
 
 
 standard_input = input
+
+
+def set_cursor_hidden(hidden: bool) -> None:
+    try:
+        if hidden:
+            cursor.hide()
+        else:
+            cursor.show()
+    except Exception:
+        pass
+
 
 def input(msg):
     print(f"[green bold]{msg}\n-> [/green bold]", end="")
@@ -86,14 +97,14 @@ class FileInput:
         path = ""
         index = 0
         try:
-            cursor.hide()
+            set_cursor_hidden(True)
             while True:
                 content = [".."] + os.listdir(path if path else None)
                 if index >= len(content):
                     index = 0
-                
+
                 System.clear()
-                print(f"Выберите файл [green bold](esc - отмена)[/green bold]:\n")
+                print("Выберите файл [green bold](esc - отмена)[/green bold]:\n")
                 for i, file in enumerate(content):
                     if i == index:
                         print(f"[green]> {file}[/green]")
@@ -102,7 +113,7 @@ class FileInput:
                 print(f"\n[bold red]{os.path.join(path, content[index]) if path else content[index]}[/bold red]")
 
                 key = readchar.readkey()
-                
+
                 if key == readchar.key.UP:
                     index = (index - 1) % len(content)
                 elif key == readchar.key.DOWN:
@@ -113,17 +124,19 @@ class FileInput:
                         index = 0
                         path = os.path.dirname(path.rstrip("/\\"))
                     elif os.path.isfile(os.path.join(path, current) if path else current):
-                        cursor.show()
+                        set_cursor_hidden(False)
                         return os.path.join(path, current) if path else current
                     else:
                         path = os.path.join(path, current) if path else current
                         index = 0
                 elif key == readchar.key.ESC:
-                    cursor.show()
+                    set_cursor_hidden(False)
                     return None
         except KeyboardInterrupt:
-            cursor.show()
+            set_cursor_hidden(False)
             return None
+        finally:
+            set_cursor_hidden(False)
 
 
 class ConfigInput:
@@ -134,13 +147,13 @@ class ConfigInput:
         index = 0
         while True:
             _render_list(
-                [str(v) for v in variants], 
+                [str(v) for v in variants],
                 index,
                 "[green bold]Выберите опцию:[/green bold]\n"
             )
-            
+
             key = readchar.readkey()
-            
+
             if key == readchar.key.UP:
                 index = (index - 1) % len(variants)
             elif key == readchar.key.DOWN:
@@ -157,13 +170,13 @@ class ConfigInput:
         route = input("Введите ключ (s для сохранения, e для выхода):")
         while not route:
             route = input("Необходим ключ (s для сохранения, e для выхода):")
-        
+
         if route == "e":
             return None
-        
+
         if route == "s":
             return d
-        
+
         screen = input("Введите значение (e для выхода):")
         while not screen:
             screen = input("Необходимо значение (e для выхода):")
@@ -173,23 +186,21 @@ class ConfigInput:
             d[route] = screen
             for k, v in d.items():
                 print(f"[green]{k}[/green]: [blue]{v}[/blue]")
-            
+
             route = input("Введите ключ (s для сохранения, e для выхода):")
             while not route:
                 route = input("Необходим ключ (s для сохранения, e для выхода):")
 
             if route == "e":
                 return None
-            
+
             if route == "s":
                 return d
-            
+
             screen = input("Введите значение (e для выхода):")
             while not screen:
                 screen = input("Необходимо значение (e для выхода):")
         return None
-
-
 
     @classmethod
     def input(cls, key, data):
@@ -203,6 +214,18 @@ class ConfigInput:
                     cls.config[key] = data["default"]
             elif data["type"] == "str":
                 cls.config[key] = input("Введите строку:") or data["default"]
+            elif data["type"] == "json":
+                raw = input("Введите JSON-значение или auto:")
+                if not raw:
+                    cls.config[key] = data["default"]
+                elif raw == "auto":
+                    cls.config[key] = "auto"
+                else:
+                    try:
+                        cls.config[key] = json.loads(raw)
+                    except json.JSONDecodeError:
+                        print(f"[red][-] Некорректный JSON, используется значение по умолчанию.[/red]")
+                        cls.config[key] = data["default"]
             elif data["type"] == "bool":
                 cls.config[key] = cls.__input_options([True, False]) or data["default"]
             elif data["type"] == "select":
@@ -215,8 +238,6 @@ class ConfigInput:
                     elif mode == "Ручная":
                         result = cls.__input_dict()
                         cls.config[key] = result if result else data["default"]
-                    else:
-                        pass
                 else:
                     cls.config[key] = cls.__input_dict() or data["default"]
             else:
@@ -232,31 +253,37 @@ class ConfigInput:
             if template[tmpl].get("required") and tmpl not in cls.config:
                 cls.config[tmpl] = template[tmpl]["default"]
         index = 0
-        
-        while True:
-            System.clear()
-            print("[green bold]Выберите настройку [blue bold](Ctrl+S - сохранить, esc - выйти)[/blue bold]:[/green bold]\n")
-            for k, v in template.dictionary.items():
-                ki = template.keys().index(k)
-                conf = cls.config.get(k)
-                if ki == index:
-                    print(f"{ki + 1}) [white]> {k}: [blue]{conf if conf is not None else v['default']}[/blue] -> {v.get('help') or 'Неизвестно'}[/white]")
-                else:
-                    print(f"{ki + 1}) [red]{k}: {conf if conf is not None else v['default']}[/red]")
-            print()
 
-            key = readchar.readkey()
-            
-            if key == readchar.key.UP:
-                index = (index - 1) % len(template.keys())
-            elif key == readchar.key.DOWN:
-                index = (index + 1) % len(template.keys())
-            elif key == readchar.key.ENTER or key == readchar.key.CR:
-                i = template.keys()[index]
-                cursor.show()
-                cls.input(i, template[i])
-            elif key == readchar.key.CTRL_S:
-                return cls.config
-            elif key == readchar.key.ESC:
-                print("[yellow][!] Выход без сохранения.[/yellow]")
-                return None
+        try:
+            set_cursor_hidden(True)
+            while True:
+                System.clear()
+                print("[green bold]Выберите настройку [blue bold](Ctrl+S - сохранить, esc - выйти)[/blue bold]:[/green bold]\n")
+                for k, v in template.dictionary.items():
+                    ki = template.keys().index(k)
+                    conf = cls.config.get(k)
+                    current = conf if conf is not None else v["default"]
+                    if ki == index:
+                        print(f"{ki + 1}) [white]> {k}: [blue]{current}[/blue] -> {v.get('help') or 'Неизвестно'}[/white]")
+                    else:
+                        print(f"{ki + 1}) [red]{k}: {current}[/red]")
+                print()
+
+                key = readchar.readkey()
+
+                if key == readchar.key.UP:
+                    index = (index - 1) % len(template.keys())
+                elif key == readchar.key.DOWN:
+                    index = (index + 1) % len(template.keys())
+                elif key == readchar.key.ENTER or key == readchar.key.CR:
+                    item_key = template.keys()[index]
+                    set_cursor_hidden(False)
+                    cls.input(item_key, template[item_key])
+                    set_cursor_hidden(True)
+                elif key == readchar.key.CTRL_S:
+                    return cls.config
+                elif key == readchar.key.ESC:
+                    print("[yellow][!] Выход без сохранения.[/yellow]")
+                    return None
+        finally:
+            set_cursor_hidden(False)

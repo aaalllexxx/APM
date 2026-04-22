@@ -3,5 +3,7 @@
     "screen_path": "screens",
     "routers": {
         "/": "HomeScreen"
-    }
+    },
+    "services_path": "services",
+    "services": "auto"
 }

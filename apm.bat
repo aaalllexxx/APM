@@ -1,5 +1,14 @@
 @echo off
-python "%APPDATA%\apm\apm.py" %*
+setlocal
+
+set "APM_HOME=%APPDATA%\apm"
+set "APM_PYTHON=%APM_HOME%\venv\Scripts\python.exe"
+
+if exist "%APM_PYTHON%" (
+    "%APM_PYTHON%" "%APM_HOME%\apm.py" %*
+) else (
+    python "%APM_HOME%\apm.py" %*
+)
 
 if not exist "%TEMP%\apm_goto.tmp" goto :eof
 
