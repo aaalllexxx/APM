@@ -1,3 +1,5 @@
+"""Модуль удаления проекта из реестра APM."""
+
 __help__ = "Удаление проекта из реестра APM"
 __module_type__ = "ПРОЧЕЕ"
 
@@ -10,6 +12,12 @@ from helpers import set_cursor_hidden
 
 
 def run(base_dir, gconf_path, *args, **kwargs):
+    """Позволяет выбрать и удалить проект из реестра APM (без удаления файлов).
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm unregister")

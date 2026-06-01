@@ -1,9 +1,19 @@
+"""Модуль просмотра установленных модулей проекта."""
+
 __help__ = "Просмотреть список модулей проекта"
 __module_type__ = "МОДУЛИ"
+
 import os
 from rich import print
 
-def run(base_dir, *args, **kwargs):
+
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Показывает список установленных модулей (локальных и глобальных).
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     module = None
     if "-h" in arg:

@@ -1,12 +1,22 @@
+"""Модуль установки программных модулей."""
+
 __help__ = "Установка программных модулей"
 __module_type__ = "МОДУЛИ"
+
+import os
 from git import Repo, exc
 from helpers import clear_dir
-import os
 from rich import print
 
-def run(base_dir, *args, **kwargs):
-    arg:list = kwargs["args"]
+
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Устанавливает программный модуль из Git-репозитория.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
+    arg: list = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm install <flags> <url>\n    -u - Обновить указанный модуль\n    --url - Указать репозиторий\n    -g - Установить модуль глобально")
         return

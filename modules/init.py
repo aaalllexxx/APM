@@ -1,3 +1,5 @@
+"""Модуль инициализации проекта AEngine."""
+
 __help__ = "Регистрация проекта в качестве проекта AEngine"
 __module_type__ = "ПРОЕКТЫ"
 
@@ -10,6 +12,12 @@ from rich import print
 
 
 def run(base_dir, gconf_path, *args, **kwargs):
+    """Инициализирует текущую директорию как проект AEngine.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm init")

@@ -1,3 +1,5 @@
+"""Модуль просмотра списка зарегистрированных проектов."""
+
 __help__ = "Просмотр списка зарегистрированных проектов"
 __module_type__ = "НАВИГАЦИЯ"
 
@@ -7,6 +9,12 @@ from rich import print
 
 
 def run(base_dir, gconf_path, *args, **kwargs):
+    """Показывает список зарегистрированных проектов AEngine.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm list")

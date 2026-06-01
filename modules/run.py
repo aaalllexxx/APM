@@ -1,3 +1,5 @@
+"""Модуль запуска проекта AEngine."""
+
 __help__ = "Запуск проекта AEngine"
 __module_type__ = "ПРОЕКТЫ"
 
@@ -9,7 +11,34 @@ from rich import print
 from helpers import FileInput, System, input
 
 
+def _select_interpreter(base_dir, g_config):
+    """Предлагает выбрать интерпретатор Python и сохраняет в конфигурацию.
+
+    Args:
+        base_dir: Базовая директория APM.
+        g_config: Словарь глобальной конфигурации.
+    """
+    selected = FileInput.select_file()
+    if selected:
+        interp = os.path.abspath(selected)
+        g_config["interpreter"] = interp
+        try:
+            with open(os.path.join(base_dir, "global_config.json"), "w", encoding="utf-8") as file_config:
+                file_config.write(json.dumps(g_config, indent=4, ensure_ascii=False))
+            print(f"[green][+] Интерпретатор сохранён: {interp}[/green]")
+        except OSError as e:
+            print(f"[red][-] Не удалось сохранить конфигурацию: {e}[/red]")
+    else:
+        print("[yellow][!] Файл не выбран.[/yellow]")
+
+
 def run(base_dir, gconf_path, *args, **kwargs):
+    """Запускает текущий проект AEngine.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm run")
@@ -88,31 +117,9 @@ def run(base_dir, gconf_path, *args, **kwargs):
         print("[red][-] Интерпретатор Python не найден.[/red]")
         ans = input("Выбрать другой интерпретатор? [д/н]")
         if "y" in ans or "д" in ans:
-            selected = FileInput.select_file()
-            if selected:
-                interp = os.path.abspath(selected)
-                g_config["interpreter"] = interp
-                try:
-                    with open(os.path.join(base_dir, "global_config.json"), "w", encoding="utf-8") as file_config:
-                        file_config.write(json.dumps(g_config, indent=4, ensure_ascii=False))
-                    print(f"[green][+] Интерпретатор сохранён: {interp}[/green]")
-                except OSError as e:
-                    print(f"[red][-] Не удалось сохранить конфигурацию: {e}[/red]")
-            else:
-                print("[yellow][!] Файл не выбран.[/yellow]")
+            _select_interpreter(base_dir, g_config)
     except Exception as e:
         print(f"[red][-] Ошибка при запуске проекта: {e}[/red]")
         ans = input("Выбрать другой интерпретатор? [д/н]")
         if "y" in ans or "д" in ans:
-            selected = FileInput.select_file()
-            if selected:
-                interp = os.path.abspath(selected)
-                g_config["interpreter"] = interp
-                try:
-                    with open(os.path.join(base_dir, "global_config.json"), "w", encoding="utf-8") as file_config:
-                        file_config.write(json.dumps(g_config, indent=4, ensure_ascii=False))
-                    print(f"[green][+] Интерпретатор сохранён: {interp}[/green]")
-                except OSError as e:
-                    print(f"[red][-] Не удалось сохранить конфигурацию: {e}[/red]")
-            else:
-                print("[yellow][!] Файл не выбран.[/yellow]")
+            _select_interpreter(base_dir, g_config)

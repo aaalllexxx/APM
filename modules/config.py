@@ -1,3 +1,5 @@
+"""Модуль создания файла конфигурации проекта."""
+
 __help__ = "Создание файла конфигураций для проекта"
 __module_type__ = "ПРОЕКТЫ"
 
@@ -7,7 +9,14 @@ from rich import print
 from helpers import ConfigInput
 from win2lin import System
 
-def run(base_dir, *args, **kwargs):
+
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Создаёт или редактирует файл конфигурации проекта.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm config")

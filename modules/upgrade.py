@@ -1,3 +1,5 @@
+"""Модуль обновления AEngineApps в текущем проекте."""
+
 __help__ = "Обновление AEngineApps в текущем проекте"
 __module_type__ = "ПРОЕКТЫ"
 
@@ -8,7 +10,13 @@ from git import Repo, exc
 from helpers import clear_dir
 
 
-def run(base_dir, *args, **kwargs):
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Обновляет AEngineApps в текущем проекте из репозитория.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs.get("args", [])
     if "-h" in arg:
         print("Usage: apm upgrade")

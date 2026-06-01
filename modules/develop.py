@@ -1,5 +1,8 @@
+"""Модуль создания шаблонов модулей и экранов."""
+
 __help__ = "Создание шаблонов модулей и экранов"
 __module_type__ = "МОДУЛИ"
+
 from rich import print
 from helpers import input
 import os
@@ -38,7 +41,13 @@ class {name}(Screen):
 }
 
 
-def run(*args, **kwargs):
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Создаёт шаблон модуля APM или экрана AEngineApps.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm develop <шаблон>")

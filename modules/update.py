@@ -1,13 +1,66 @@
+"""Модуль обновления APM из репозитория."""
+
 __help__ = "Обновить менеджер проектов apm"
 __module_type__ = "ПРОЧЕЕ"
+
 import os
-import subprocess
 from rich import print
 from git import Repo, exc
 from helpers import clear_dir
 from win2lin import System
 
-def run(base_dir, *args, **kwargs):
+# Файлы и директории, которые НЕ должны удаляться при обновлении
+_PROTECTED_NAMES = frozenset({
+    "installed",
+    "global_config.json",
+    "config.json",
+})
+
+# Только эти расширения файлов могут быть удалены
+_ALLOWED_EXTENSIONS = frozenset({
+    ".py", ".bat", ".sh", ".ps1", ".md", ".txt", ".json",
+})
+
+
+def _is_safe_to_delete(filepath, apm_dir):
+    """Проверяет безопасность удаления файла/директории.
+
+    Args:
+        filepath: Абсолютный путь к файлу/директории.
+        apm_dir: Базовая директория APM.
+
+    Returns:
+        True если файл можно безопасно удалить.
+    """
+    real_filepath = os.path.realpath(filepath)
+    real_apm_dir = os.path.realpath(apm_dir)
+
+    # Проверяем что путь находится внутри директории APM
+    if not real_filepath.startswith(real_apm_dir + os.sep):
+        return False
+
+    basename = os.path.basename(filepath)
+
+    # Защита важных файлов/директорий
+    if basename in _PROTECTED_NAMES:
+        return False
+
+    # Для файлов проверяем расширение
+    if os.path.isfile(filepath):
+        _, ext = os.path.splitext(basename)
+        if ext.lower() not in _ALLOWED_EXTENSIONS:
+            return False
+
+    return True
+
+
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Обновляет APM из GitHub-репозитория.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm update")
@@ -21,12 +74,15 @@ def run(base_dir, *args, **kwargs):
         print(f"[red][-] Директория APM не найдена: {apm_dir}[/red]")
         return
 
+    # Безопасная очистка старых файлов
     for file in os.listdir(apm_dir):
         fl = os.path.join(apm_dir, file)
+        if not _is_safe_to_delete(fl, apm_dir):
+            continue
         try:
-            if os.path.isfile(fl) and "apm" not in file:
+            if os.path.isfile(fl):
                 os.remove(fl)
-            elif os.path.isdir(fl) and "installed" not in file:
+            elif os.path.isdir(fl):
                 clear_dir(fl)
         except Exception as e:
             print(f"[yellow][!] Не удалось удалить {fl}: {e}[/yellow]")

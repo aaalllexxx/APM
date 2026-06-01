@@ -1,3 +1,5 @@
+"""Модуль создания нового проекта AEngine."""
+
 __help__ = "Создание нового проекта"
 __module_type__ = "ПРОЕКТЫ"
 
@@ -10,7 +12,13 @@ from helpers import input, clear_dir, register_project
 from git import Repo, exc
 
 
-def run(base_dir, *args, **kwargs):
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Создаёт новый проект AEngine из шаблона.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm create")
@@ -64,7 +72,6 @@ def run(base_dir, *args, **kwargs):
         return
     
     # Регистрация проекта в глобальном конфиге
-    gconf_path = args[0] if args else os.path.join(base_dir, "global_config.json")
     register_project(gconf_path, path, directory)
     
     print("[green bold]Проект создан.[/green bold]")

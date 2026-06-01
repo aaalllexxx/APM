@@ -1,10 +1,20 @@
-__help__ = "удаляет загруженный модуль"
+"""Модуль удаления загруженного модуля."""
+
+__help__ = "Удаление загруженного модуля"
 __module_type__ = "МОДУЛИ"
+
 import os
 from helpers import clear_dir
 from rich import print
 
-def run(base_dir, *args, **kwargs):
+
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Удаляет установленный программный модуль.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg: list = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm remove <flags> <name>\n    -g - Удаление глобального модуля")

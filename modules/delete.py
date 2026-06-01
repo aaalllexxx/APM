@@ -1,12 +1,20 @@
+"""Модуль удаления проекта AEngine."""
+
 __help__ = "Удаление проекта"
 __module_type__ = "ПРОЕКТЫ"
-import os
-import shutil
-from helpers import input
-from rich import print
-from helpers import clear_dir
 
-def run(*args, **kwargs):
+import os
+from helpers import input, clear_dir
+from rich import print
+
+
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Удаляет текущий проект AEngine.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm delete")

@@ -1,3 +1,5 @@
+"""Модуль выбора проекта в качестве глобального."""
+
 __help__ = "Выбор проекта в качестве глобального"
 __module_type__ = "ПРОЕКТЫ"
 
@@ -7,6 +9,12 @@ from rich import print
 
 
 def run(base_dir, gconf_path, *args, **kwargs):
+    """Помечает текущий проект как основной в глобальной конфигурации.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm select")

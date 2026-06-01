@@ -1,3 +1,5 @@
+"""Модуль перехода в директорию проекта."""
+
 __help__ = "Перейти в директорию проекта"
 __module_type__ = "НАВИГАЦИЯ"
 
@@ -11,6 +13,12 @@ from helpers import set_cursor_hidden
 
 
 def run(base_dir, gconf_path, *args, **kwargs):
+    """Позволяет выбрать и перейти в директорию зарегистрированного проекта.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     if "-h" in arg:
         print("Usage: apm goto")

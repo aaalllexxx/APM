@@ -1,3 +1,5 @@
+"""Модуль выполнения команд в окружении APM."""
+
 __help__ = "Выполнить команду внутри окружения APM"
 __module_type__ = "ПРОЧЕЕ"
 
@@ -21,7 +23,13 @@ def _build_apm_env():
     return env, python_executable
 
 
-def run(base_dir, *args, **kwargs):
+def run(base_dir, gconf_path, *args, **kwargs):
+    """Выполняет команду внутри Python-окружения APM.
+
+    Args:
+        base_dir: Базовая директория APM.
+        gconf_path: Путь к глобальному конфигу APM.
+    """
     arg = kwargs["args"]
     command_args = arg[1:] if arg and arg[0] == "env" else arg
 
