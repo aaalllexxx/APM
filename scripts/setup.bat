@@ -22,10 +22,10 @@ if errorlevel 1 (
 )
 
 echo [+] Updating pip...
-"%VENV_PYTHON%" -m pip install --upgrade pip
+"%VENV_PYTHON%" -m pip install --no-cache-dir --upgrade pip
 
 echo [+] Installing core APM dependencies...
-"%VENV_PYTHON%" -m pip install colorama==0.4.6 cursor==1.3.5 readchar markdown-it-py==3.0.0 mdurl==0.1.2 Pygments==2.17.2 rich==13.7.1 flask GitPython
+"%VENV_PYTHON%" -m pip install --no-cache-dir colorama==0.4.6 cursor==1.3.5 readchar markdown-it-py==3.0.0 mdurl==0.1.2 Pygments==2.17.2 rich==13.7.1 flask GitPython
 if errorlevel 1 (
     echo [-] Failed to install core dependencies.
     pause
@@ -33,7 +33,7 @@ if errorlevel 1 (
 )
 
 echo [+] Installing optional desktop dependency pywebview...
-"%VENV_PYTHON%" -m pip install pywebview
+"%VENV_PYTHON%" -m pip install --no-cache-dir pywebview
 if errorlevel 1 (
     echo [!] pywebview was not installed. APM will work, but desktop/webview mode may require manual installation later.
 )

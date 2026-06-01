@@ -21,11 +21,11 @@ echo "[+] Creating virtual environment in $APM_DIR/venv..."
 python3 -m venv "$APM_DIR/venv" || { echo "[-] Failed to create venv"; exit 1; }
 
 echo "[+] Updating pip..."
-"$APM_DIR/venv/bin/python3" -m pip install --upgrade pip
+"$APM_DIR/venv/bin/python3" -m pip install --no-cache-dir --upgrade pip
 
 echo "[+] Installing project dependencies..."
 if [ -f "$APM_ROOT/requirements.txt" ]; then
-    "$APM_DIR/venv/bin/python3" -m pip install -r "$APM_ROOT/requirements.txt"
+    "$APM_DIR/venv/bin/python3" -m pip install --no-cache-dir -r "$APM_ROOT/requirements.txt"
 else
     echo "[!] requirements.txt not found in $APM_ROOT"
 fi
