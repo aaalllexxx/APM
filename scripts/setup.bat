@@ -34,7 +34,7 @@ if not defined PYTHON_VERSION (
 call :is_supported_python "%PYTHON_VERSION%"
 if errorlevel 1 (
     echo [-] Unsupported Python version detected: %PYTHON_VERSION%
-    echo [!] Install Python 3.10, 3.11, 3.12, or 3.13 and run setup again.
+    echo [!] Install Python 3.10, 3.11, 3.12, 3.13, or 3.14 and run setup again.
     call :maybe_pause %*
     exit /b 1
 )
@@ -97,14 +97,14 @@ if not exist "%VENV_PYTHON%" (
 )
 
 echo [+] Updating pip...
-"%VENV_PYTHON%" -m pip install --upgrade pip
+"%VENV_PYTHON%" -m pip install --no-cache-dir --upgrade pip
 if errorlevel 1 (
     echo [!] Failed to upgrade pip. Continuing with the bundled version.
 )
 
 echo [+] Installing project dependencies...
 if exist "%PROJECT_ROOT%\requirements.txt" (
-    "%VENV_PYTHON%" -m pip install -r "%PROJECT_ROOT%\requirements.txt"
+    "%VENV_PYTHON%" -m pip install --no-cache-dir -r "%PROJECT_ROOT%\requirements.txt"
     if errorlevel 1 (
         echo [-] Failed to install dependencies from requirements.txt.
         call :maybe_pause %*
@@ -115,8 +115,12 @@ if exist "%PROJECT_ROOT%\requirements.txt" (
 )
 
 echo [+] Synchronizing APM files...
-xcopy "%PROJECT_ROOT%\*" "%APM_DIR%\" /E /I /Y /Q /EXCLUDE:"%SCRIPT_DIR%xcopy_exclude.txt" >nul
-if errorlevel 2 (
+rem xcopy's /EXCLUDE does not accept a quoted path, so run from the script dir and use a relative file name.
+pushd "%SCRIPT_DIR%"
+xcopy "%PROJECT_ROOT%\*" "%APM_DIR%\" /E /I /Y /Q /EXCLUDE:xcopy_exclude.txt >nul
+set "XCOPY_ERR=%errorlevel%"
+popd
+if %XCOPY_ERR% GEQ 2 (
     echo [-] Failed to copy project files into "%APM_DIR%".
     call :maybe_pause %*
     exit /b 1
@@ -139,7 +143,7 @@ call :maybe_pause %*
 exit /b 0
 
 :find_python
-for %%V in (3.13 3.12 3.11 3.10) do (
+for %%V in (3.14 3.13 3.12 3.11 3.10) do (
     for /f "usebackq delims=" %%I in (`py -%%V -c "import sys; print(sys.executable)" 2^>nul`) do (
         set "PYTHON_EXE=%%I"
         goto :eof
@@ -181,7 +185,7 @@ if %PY_MINOR% LSS 10 (
     endlocal & exit /b 1
 )
 
-if %PY_MINOR% GEQ 14 (
+if %PY_MINOR% GEQ 15 (
     endlocal & exit /b 1
 )
 

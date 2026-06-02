@@ -15,7 +15,7 @@ TARGET_LINK="$BIN_DIR/apm"
 find_python() {
     local candidate
 
-    for candidate in python3.13 python3.12 python3.11 python3.10 python3; do
+    for candidate in python3.14 python3.13 python3.12 python3.11 python3.10 python3; do
         if command -v "$candidate" >/dev/null 2>&1; then
             printf '%s\n' "$candidate"
             return 0
@@ -36,7 +36,7 @@ is_supported_python() {
 
     [ "$major" = "3" ] || return 1
     [ "$minor" -ge 10 ] || return 1
-    [ "$minor" -lt 14 ] || return 1
+    [ "$minor" -lt 15 ] || return 1
 }
 
 PYTHON_BIN="$(find_python || true)"
@@ -47,14 +47,14 @@ echo "=========================================="
 
 if [ -z "$PYTHON_BIN" ]; then
     echo "[-] Python 3 was not found."
-    echo "[!] Install Python 3.10, 3.11, 3.12, or 3.13 and run setup again."
+    echo "[!] Install Python 3.10, 3.11, 3.12, 3.13, or 3.14 and run setup again."
     exit 1
 fi
 
 PYTHON_VERSION="$(read_python_version "$PYTHON_BIN")"
 if ! is_supported_python "$PYTHON_VERSION"; then
     echo "[-] Unsupported Python version detected: $PYTHON_VERSION"
-    echo "[!] Install Python 3.10, 3.11, 3.12, or 3.13 and run setup again."
+    echo "[!] Install Python 3.10, 3.11, 3.12, 3.13, or 3.14 and run setup again."
     exit 1
 fi
 
@@ -78,11 +78,11 @@ if [ ! -x "$VENV_PYTHON" ]; then
 fi
 
 echo "[+] Updating pip..."
-"$VENV_PYTHON" -m pip install --upgrade pip || echo "[!] Failed to upgrade pip. Continuing with the bundled version."
+"$VENV_PYTHON" -m pip install --no-cache-dir --upgrade pip || echo "[!] Failed to upgrade pip. Continuing with the bundled version."
 
 echo "[+] Installing project dependencies..."
 if [ -f "$PROJECT_ROOT/requirements.txt" ]; then
-    "$VENV_PYTHON" -m pip install -r "$PROJECT_ROOT/requirements.txt" || {
+    "$VENV_PYTHON" -m pip install --no-cache-dir -r "$PROJECT_ROOT/requirements.txt" || {
         echo "[-] Failed to install dependencies from requirements.txt"
         exit 1
     }
